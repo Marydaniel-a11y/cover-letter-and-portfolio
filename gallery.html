@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Letter Gallery</title>
+    
+    <!-- Import the same font for consistency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET - Start fresh with no default margins/padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* BODY - Same warm beige background as your cover letter */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #f5ece3; /* Warm beige */
+            color: #22223b; /* Dark blue-gray */
+            padding: 32px;
+            font-size: 10px; /* Match cover letter base size */
+        }
+
+        /* MAIN CONTENT WRAPPER - Centers and constrains the gallery width */
+        .content-wrapper {
+            max-width: 595px; /* Match the cover letter page width from Figma */
+            margin: 0 auto; /* Center horizontally */
+            /* Removed padding-left to match cover-letter.html layout */
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            gap: 20px; /* 20px gap between sections (from Figma) */
+            /* ANIMATION: Scale up slightly when page loads - no fade */
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        /* KEYFRAMES - Define the scale-in animation */
+        /* This tells the browser: start smaller (95%), end at normal size (100%) */
+        @keyframes scaleIn {
+            from {
+                /* ANIMATION: Start slightly smaller */
+                transform: scale(0.98);
+            }
+            to {
+                /* ANIMATION: End at normal size */
+                transform: scale(1);
+            }
+        }
+
+        /* BACK LINK - Simple text link at the top */
+        .back-link {
+            font-weight: 700; /* Bold */
+            font-size: 10px;
+            color: #22223b;
+            text-decoration: none; /* No underline */
+            display: inline-block;
+            /* ANIMATION: Smooth transition for transform and color */
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #4a4e69; /* Lighter color on hover */
+            /* ANIMATION: Gentle slide to the left on hover (micro-movement) */
+            transform: translateX(-3px) scale(1.05);
+        }
+
+        /* PREVIEW SECTION - The big image display */
+        .preview-section {
+            width: 100%; /* Fills the full content-wrapper width (595px) */
+            height: 395px; /* Exact height from Figma */
+            position: relative;
+            overflow: hidden; /* Crops image to container */
+            background-color: #ffffff; /* White background behind the image */
+        }
+
+        /* THE BIG PREVIEW IMAGE */
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Fits the entire image without cropping */
+            /* ANIMATION: Fast scale transition when image changes */
+            transition: transform 0.2s ease;
+        }
+
+        /* THUMBNAILS SECTION - Horizontal row of small images */
+        .thumbnails-section {
+            width: 100%; /* Fills the full content-wrapper width (595px) */
+            display: flex; /* Horizontal layout */
+            gap: 16px; /* 16px gap between thumbnails (from Figma) */
+            height: 97px; /* Exact height from Figma */
+        }
+
+        /* INDIVIDUAL THUMBNAIL - Each small clickable image */
+        .thumbnail {
+            flex: 1; /* Equal width for all thumbnails */
+            height: 97px; /* Fixed height from Figma */
+            cursor: pointer; /* Hand cursor on hover */
+            border: 2px solid transparent; /* Invisible border by default */
+            transition: all 0.2s ease; /* Fast animation */
+            overflow: hidden; /* Crops image to container */
+            position: relative;
+        }
+
+        /* THUMBNAIL HOVER - When you move mouse over a thumbnail */
+        .thumbnail:hover {
+            border-color: #9a8c98; /* Purple-gray border on hover */
+            /* ANIMATION: Scale up slightly */
+            transform: scale(1.05);
+        }
+
+        /* ACTIVE THUMBNAIL - The currently selected thumbnail */
+        .thumbnail.active {
+            border-color: #22223b; /* Dark border for selected */
+            transform: scale(1.02); /* Slightly larger when active */
+        }
+
+        /* THUMBNAIL IMAGES */
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Fills the space, may crop */
+            /* ANIMATION: Fast transition for the zoom effect */
+            transition: transform 0.2s ease;
+        }
+
+        /* THUMBNAIL IMAGE HOVER - Zoom effect on the image itself */
+        .thumbnail:hover img {
+            /* ANIMATION: Zoom in (scales to 110% = 1.1 times original size) */
+            transform: scale(1.1);
+        }
+
+        /* FOOTNOTE - Small italic text at bottom */
+        .footnote {
+            position: fixed; /* Stays at bottom of viewport */
+            bottom: 38px;
+            left: 32px; /* Match body padding */
+            font-size: 8px;
+            font-style: italic;
+            color: rgba(34, 34, 59, 0.6);
+        }
+
+        /* RESPONSIVE - Adjustments for smaller screens (tablets and phones) */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .content-wrapper {
+                padding-left: 20px;
+                max-width: 100%;
+            }
+
+            .preview-section,
+            .thumbnails-section {
+                width: 100%;
+                max-width: 441px;
+            }
+
+            .thumbnails-section {
+                flex-wrap: wrap;
+            }
+
+            .footnote {
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content Wrapper -->
+    <div class="content-wrapper">
+        
+        <!-- BACK LINK - Simple text at top -->
+        <a href="cover-letter.html" class="back-link"><- Back</a>
+
+        <!-- BIG PREVIEW - Large image display -->
+        <div class="preview-section">
+            <img 
+                id="preview" 
+                class="preview-image" 
+                src="refernces/refernce_1.jpg" 
+                alt="Cover letter preview"
+            >
+        </div>
+
+        <!-- THUMBNAILS - Horizontal row of 6 small images -->
+        <div class="thumbnails-section">
+            
+            <!-- Thumbnail 1 - Active/selected by default -->
+            <div class="thumbnail active" onclick="changeImage(this, 'refernces/refernce_1.jpg')">
+                <img src="refernces/refernce_1.jpg" alt="Cover letter 1">
+            </div>
+
+            <!-- Thumbnail 2 -->
+            <div class="thumbnail" onclick="changeImage(this, 'refernces/refernce_2.jpg')">
+                <img src="refernces/refernce_2.jpg" alt="Cover letter 2">
+            </div>
+
+            <!-- Thumbnail 3 -->
+            <div class="thumbnail" onclick="changeImage(this, 'refernces/refernce_3.jpg')">
+                <img src="refernces/refernce_3.jpg" alt="Cover letter 3">
+            </div>
+
+            <!-- Thumbnail 4 -->
+            <div class="thumbnail" onclick="changeImage(this, 'refernces/refernce_4.jpg')">
+                <img src="refernces/refernce_4.jpg" alt="Cover letter 4">
+            </div>
+
+            <!-- Thumbnail 5 -->
+            <div class="thumbnail" onclick="changeImage(this, 'refernces/refernce_5.jpg')">
+                <img src="refernces/refernce_5.jpg" alt="Cover letter 5">
+            </div>
+
+            <!-- Thumbnail 6 -->
+            <div class="thumbnail" onclick="changeImage(this, 'refernces/refernce_6.jpg')">
+                <img src="refernces/refernce_6.jpg" alt="Cover letter 6">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTNOTE - Fixed at bottom -->
+
+    <!-- JAVASCRIPT - The code that makes thumbnails interactive -->
+    <script>
+        /**
+         * This function runs when you click on a thumbnail
+         * It does two things:
+         * 1. Changes the big preview image (with quick scale animation)
+         * 2. Updates which thumbnail shows as "active" (selected)
+         * 
+         * @param {HTMLElement} thumbnail - The thumbnail div that was clicked
+         * @param {string} imageUrl - The URL of the full-size image to display
+         */
+        function changeImage(thumbnail, imageUrl) {
+            // STEP 1: Find the big preview image element
+            const preview = document.getElementById('preview');
+            
+            // STEP 2A: ANIMATION - Scale down the current image
+            // Shrink to 95% of original size
+            preview.style.transform = 'scale(0.95)';
+            
+            // STEP 2B: Wait 100ms (0.1 seconds), then change the image
+            // This creates a quick scale-down, change, scale-up effect
+            setTimeout(() => {
+                // Change the preview image to the clicked thumbnail's image
+                preview.src = imageUrl;
+                
+                // STEP 2C: ANIMATION - Scale back up to normal size
+                // Return to 100% size
+                preview.style.transform = 'scale(1)';
+            }, 100);
+            
+            // STEP 3: Remove the "active" class from ALL thumbnails
+            // This removes the border and scale from the previously selected thumbnail
+            const allThumbnails = document.querySelectorAll('.thumbnail');
+            allThumbnails.forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            
+            // STEP 4: Add the "active" class to the clicked thumbnail
+            // This adds the border and scale to show which thumbnail is currently selected
+            thumbnail.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+

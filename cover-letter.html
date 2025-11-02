@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Daniel - Cover Letter</title>
+    
+    <!-- Import JetBrains Mono font - This is the typewriter-style font from the Figma design -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET - Start with clean slate */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* BODY - The warm beige background that covers the entire page */
+        body {
+            font-family: 'JetBrains Mono', monospace; /* Typewriter-style font */
+            background-color: #f5ece3; /* Warm beige color from Figma */
+            color: #22223b; /* Dark blue-gray text color */
+            padding: 32px; /* Space around the edges */
+            font-size: 10px; /* Base font size - much smaller than typical web text */
+            line-height: 20px; /* Line height for comfortable reading */
+        }
+
+        /* CONTAINER - The main document area (595px width matches the Figma design) */
+        .container {
+            max-width: 595px; /* Exact width from Figma design */
+            margin: 0 auto; /* Centers the document horizontally */
+            position: relative; /* Allows us to position elements inside */
+            min-height: 858px; /* Minimum height to match Figma layout */
+        }
+
+        /* HEADER SECTION - Contains photo and contact info at the top */
+        .header {
+            display: flex; /* Flexbox for layout */
+            flex-direction: column; /* Stack items vertically */
+            gap: 8px; /* Small gap between photo and contact info */
+            margin-bottom: 20px; /* Space before the date */
+            width: 172px; /* Fixed width to match Figma */
+        }
+
+        /* PHOTO - Square photo at top left (not circular like before!) */
+        .photo {
+            width: 97px; /* Exact size from Figma */
+            height: 97px;
+            background-color: #e0e0e0; /* Light gray placeholder */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px; /* Small text size */
+            color: #666;
+            text-align: center;
+            overflow: hidden; /* Crops image to fit */
+        }
+
+        /* When you add a real photo, this styles it */
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Makes sure photo fills the square nicely */
+        }
+
+        /* CONTACT INFO - Name, location, email, phone */
+        .contact-info {
+            font-size: 8px; /* Very small text */
+            line-height: normal; /* Tighter line spacing */
+            color: #22223b;
+        }
+
+        /* Links in the contact info */
+        .contact-info a {
+            color: #22223b; /* Same color as text */
+            text-decoration: underline; /* Underlined links */
+        }
+
+        .contact-info a:hover {
+            opacity: 0.7; /* Slight fade on hover */
+        }
+
+        /* DATE - The date line (Nov 2, 2025) */
+        .date {
+            font-size: 10px;
+            margin-bottom: 47px; /* Exact spacing from Figma to greeting */
+            color: #22223b;
+        }
+
+        /* LETTER CONTENT - The main body of the letter */
+        .letter-content {
+            /* Removed max-width to allow full container width (595px) */
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* Space between paragraphs */
+        }
+
+        /* GREETING - The "Hi Monday.com team," line */
+        .greeting {
+            font-weight: 700; /* Bold */
+            font-size: 10px;
+        }
+
+        /* PARAGRAPHS - The main text blocks */
+        .letter-content p {
+            margin: 0; /* Reset default margins */
+            font-size: 10px;
+            line-height: 20px; /* Comfortable reading space */
+        }
+
+        /* SIGNATURE SECTION - The closing with signature */
+        .signature-section {
+            margin-top: 20px; /* Space before signature */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* Aligns to the right side */
+            gap: 3px; /* Small gap between elements */
+        }
+
+        /* CLOSING TEXT - "Thanks, Mary Daniel" */
+        .closing {
+            font-size: 10px;
+            text-align: right;
+            line-height: normal;
+        }
+
+        /* JOB TITLE - "Product Designer" */
+        .job-title {
+            font-size: 10px;
+            text-align: right;
+        }
+
+        /* SIGNATURE IMAGE - The handwritten signature graphic */
+        .signature-image {
+            width: 48.954px; /* Exact dimensions from Figma */
+            height: 59.725px;
+            margin-top: 5px;
+        }
+
+        /* FOOTNOTE - The small italic text at the very bottom */
+        .footnote {
+            position: absolute; /* Positions it at the bottom */
+            bottom: 38px; /* Distance from bottom */
+            left: 0;
+            font-size: 8px;
+            font-style: italic; /* Italic text */
+            color: rgba(34, 34, 59, 0.6); /* Semi-transparent text */
+        }
+
+        /* FOOTNOTE LINKS - Make sure links show pointer cursor */
+        .footnote a {
+            cursor: pointer; /* Hand cursor for clickable links */
+        }
+
+        /* HOVER EFFECT - Changes color when mouse hovers over the skills text */
+        .highlight-skills {
+            /* transition creates a smooth color change animation */
+            transition: color 0.3s ease; /* 0.3 seconds smooth transition */
+            /* cursor stays as default text cursor (no pointer hand) */
+        }
+
+        /* When mouse hovers over the skills text, change color to purple */
+        .highlight-skills:hover {
+            color: #FF0800; /* Bright red color */
+        }
+
+        /* ========================================
+           EMOJI DISPLAY BOX - Top Right Corner
+           ======================================== */
+        
+        /* EMOJI BOX - Positioned inside the container */
+        .emoji-display {
+            position: absolute; /* Positioned relative to the .container */
+            top: 0; /* Align with top of container */
+            right: 0; /* Align with right side of container */
+            font-size: 32px; /* Large emoji size from Figma */
+            line-height: 1; /* Prevents extra spacing around emoji */
+            opacity: 0; /* Start invisible */
+            transition: opacity 0.3s ease; /* Smooth fade in/out animation */
+            pointer-events: none; /* Emoji won't block clicks on other elements */
+            z-index: 1000; /* Ensures emoji appears above other content */
+        }
+
+        /* When emoji box is visible (we'll add this class with JavaScript) */
+        .emoji-display.visible {
+            opacity: 1; /* Fully visible */
+        }
+
+        /* HOVERABLE WORDS - Words that trigger emoji changes */
+        .hoverable-word {
+            cursor: default; /* Keep normal text cursor */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+
+        /* Optional: Add subtle hover effect on hoverable words */
+        .hoverable-word:hover {
+            color: #FF0800; /* Same red as highlight-skills */
+        }
+
+        /* RESPONSIVE - Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px; /* Less padding on mobile */
+            }
+
+            .container {
+                max-width: 100%; /* Full width on mobile */
+            }
+
+            .letter-content {
+                max-width: 100%; /* Full width on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- MAIN DOCUMENT CONTAINER -->
+    <div class="container">
+        
+        <!-- EMOJI DISPLAY BOX - Shows dynamic emoji in top-right corner of container -->
+        <div class="emoji-display" id="emojiDisplay">🏙️</div>
+        
+        <!-- HEADER: Photo and Contact Information -->
+        <div class="header">
+            <!-- Square Photo (replace with your actual photo) -->
+            <div class="photo">
+                <!-- Your photo is now connected! -->
+                <img src="Files/mary-daniel.png" alt="Mary Daniel">
+            </div>
+            
+            <!-- Contact Details -->
+            <div class="contact-info">
+                <p>Mary Daniel</p>
+                <p>Tel Aviv, Israel</p>
+                <p>marydaniel.product@gmail.com</p>
+                <p>+972 52-6394238</p>
+                <p>
+                    <a href="#" target="_blank">[Portfolio]</a>
+                    <a href="#" target="_blank">[LinkedIn]</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- DATE -->
+        <div class="date">Nov 2, 2025</div>
+
+        <!-- LETTER BODY -->
+        <div class="letter-content">
+            <!-- Greeting -->
+            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Monday.com team,</span></p>
+
+            <!-- Paragraph 1 -->
+            <p>
+                <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
+                intersection of AI products — software, hardware, and us humans. Over the past few years, 
+                I've helped launch and refine digital products at companies like <span class="hoverable-word" data-emoji="💡">Lightricks</span> and <span class="hoverable-word" data-emoji="🌐">Wix</span>, from 
+                early discovery through to production.
+            </p>
+
+            <!-- Paragraph 2 -->
+            <p>
+                At Lightricks, I was part of a team that built a new AI-based product from the ground up, 
+                using tools like <span class="hoverable-word" data-emoji="🛠️">Figma Make, Bolt, Cursor, Claude, and ChatGPT</span> to ideate and iterate faster. 
+                That experience deepened my curiosity for how AI can empower creativity and simplify complexity.
+            </p>
+
+            <!-- Paragraph 3 -->
+            <p>
+                I'm especially excited about the opportunity to learn, grow, and help shape foundational AI 
+                experiences that feel intuitive, empowering, and seamlessly integrated into users' daily workflows. 
+                I believe my strengths lie in my <span class="hoverable-word" data-emoji="✨">diligence, curiosity, broad perspective, and strong communication 
+                skills</span> — especially when working closely with developers and data teams to bring ideas to life.
+            </p>
+        </div>
+
+        <!-- SIGNATURE AREA -->
+        <div class="signature-section">
+            <!-- Closing text -->
+            <div class="closing">
+                <p><span class="hoverable-word" data-emoji="🙏">Thanks,</span></p>
+                <p>Mary Daniel</p>
+            </div>
+            
+            <!-- Job title -->
+            <p class="job-title">Product Designer</p>
+            
+            <!-- Handwritten signature (you can add an image of your signature here) -->
+            <div class="signature-image">
+                <!-- Your signature is now connected! -->
+                <img src="Files/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+
+        <!-- FOOTNOTE at bottom -->
+        <p class="footnote">*Inspiration reference: <a href="gallery.html" class="hoverable-word" data-emoji="🖼️">link one</a>, <a href="https://www.linkedin.com/posts/felixleezd_i-have-a-new-website-i-am-not-a-developer-activity-7389671927780536320-Zp0z?utm_source=share&utm_medium=member_ios&rcm=ACoAADF3EToBGtx_Pb3b-39xRwtU8r3k_ik8j1A" target="_blank" class="hoverable-word" data-emoji="✈️">link two</a></p>
+
+    </div>
+
+    <!-- ========================================
+         JAVASCRIPT - Dynamic Emoji System
+         ======================================== -->
+    <script>
+        /**
+         * EMOJI HOVER SYSTEM
+         * ------------------
+         * This code makes the emoji in the top-right corner change
+         * when you hover over specific words in the letter.
+         * 
+         * HOW IT WORKS:
+         * 1. Find all words that have the class "hoverable-word"
+         * 2. Add event listeners to detect mouse hover
+         * 3. When mouse enters a word, show emoji and change it
+         * 4. When mouse leaves a word, hide emoji
+         */
+
+        // STEP 1: Get reference to the emoji display element
+        // This is like telling JavaScript "hey, I want to control this element"
+        const emojiDisplay = document.getElementById('emojiDisplay');
+
+        // STEP 2: Find all hoverable words in the document
+        // querySelectorAll finds ALL elements that match the class name
+        const hoverableWords = document.querySelectorAll('.hoverable-word');
+
+        // STEP 3: Add event listeners to each hoverable word
+        // forEach loops through each word and sets up hover detection
+        hoverableWords.forEach(word => {
+            
+            // MOUSEENTER EVENT - Triggers when mouse moves over the word
+            word.addEventListener('mouseenter', function() {
+                // Get the emoji associated with this word from data-emoji attribute
+                const emoji = this.getAttribute('data-emoji');
+                
+                // Change the emoji display to show this emoji
+                emojiDisplay.textContent = emoji;
+                
+                // Make the emoji visible by adding the 'visible' class
+                // This triggers the opacity transition from 0 to 1
+                emojiDisplay.classList.add('visible');
+            });
+
+            // MOUSELEAVE EVENT - Triggers when mouse moves away from the word
+            word.addEventListener('mouseleave', function() {
+                // Hide the emoji by removing the 'visible' class
+                // This triggers the opacity transition from 1 to 0
+                emojiDisplay.classList.remove('visible');
+            });
+        });
+
+        /**
+         * EDUCATIONAL NOTE:
+         * -----------------
+         * data-emoji="🏙️" is called a "data attribute"
+         * It lets us store custom information right in the HTML
+         * We can then read this information with JavaScript
+         * 
+         * For example:
+         * <span data-emoji="🏙️">Tel Aviv</span>
+         * When you hover, JavaScript reads data-emoji and shows 🏙️
+         */
+    </script>
+</body>
+</html>
+
