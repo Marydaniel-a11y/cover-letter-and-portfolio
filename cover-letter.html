@@ -130,6 +130,9 @@
             display: flex;
             flex-direction: column;
             gap: 12px; /* Space between paragraphs */
+            /* FIXED HEIGHT - Keeps signature in same position regardless of content */
+            height: 350px; /* Fixed height to maintain consistent layout between light/dark modes */
+            min-height: 350px; /* Ensures minimum height is maintained */
         }
 
         /* GREETING - The "Hi Monday.com team," line */
@@ -210,39 +213,67 @@
             opacity: 1; /* Fully visible */
         }
 
+        /* ========================================
+           HOVER PULSE ANIMATION - Bouncing and glowing effect for hoverable words
+           ======================================== */
+        
+        /* KEYFRAMES - Defines the hover pulse animation sequence */
+        /* This creates a bounce + glow effect that's more dynamic */
+        @keyframes hoverPulse {
+            0% {
+                transform: translateY(0); /* Start at normal position */
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6); /* No glow at start */
+            }
+            50% {
+                transform: translateY(-2px); /* Bounce up 2 pixels */
+                text-shadow: 0 0 8px rgba(255, 0, 0, 0.4); /* Add red glow */
+            }
+            100% {
+                transform: translateY(0); /* Return to normal position */
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6); /* Glow fades away */
+            }
+        }
+        
         /* HOVERABLE WORDS - Words that trigger emoji changes */
         .hoverable-word {
-            cursor: default; /* Keep normal text cursor */
-            transition: color 0.3s ease; /* Smooth color transition */
+            cursor: pointer; /* Pointer cursor to show it's interactive */
+            color: var(--accent-red); /* Red color by default */
+            transition: transform 0.2s; /* Smooth transition for any transform changes */
+        }
+        
+        /* PULSING STATE - Apply the hover pulse animation when hovering */
+        .hoverable-word.pulsing {
+            animation: hoverPulse 1.6s ease-in-out infinite; /* 1.6 seconds per cycle, smooth easing, repeats forever */
         }
 
         /* Optional: Add subtle hover effect on hoverable words */
         .hoverable-word:hover {
             /* UPDATED: Now uses CSS variable for dark mode support */
-            color: var(--accent-red);
+            color: var(--accent-red); /* Stays red on hover */
         }
 
         /* ========================================
-           DARK MODE TOGGLE BUTTON - Top Right Corner
+           DARK MODE TOGGLE SWITCH - Top Right Corner
            ======================================== */
         
-        /* TOGGLE CONTAINER - Holds the toggle button */
+        /* TOGGLE SWITCH CONTAINER - The outer pill-shaped track */
         .theme-toggle {
             position: absolute; /* Positioned relative to the .container */
             top: 0; /* Align with top of container */
             right: 0; /* Align with right side of container */
             z-index: 1001; /* Above emoji (which is z-index: 1000) */
-            background-color: var(--toggle-bg); /* Subtle background */
-            border-radius: 20px; /* Rounded pill shape */
-            padding: 6px 12px; /* Padding inside the button */
+            
+            /* DIMENSIONS - Exact measurements from Figma */
+            width: 44px; /* Total width of the toggle */
+            height: 24px; /* Total height of the toggle */
+            
+            /* STYLING - Match Figma design */
+            background-color: #72C3EC; /* Light blue background for LIGHT MODE */
+            border-radius: 16px; /* Rounded pill shape (16px from Figma) */
+            
             cursor: pointer; /* Hand cursor to show it's clickable */
-            /* UPDATED: Added opacity to transition for smooth fade out */
-            transition: all 0.3s ease, opacity 0.3s ease;
-            display: flex; /* Flexbox for centering icon */
-            align-items: center; /* Vertically center */
-            justify-content: center; /* Horizontally center */
-            gap: 4px; /* Small gap between icon and text */
-            font-size: 16px; /* Icon size */
+            /* ANIMATION - Smooth color transition when switching modes */
+            transition: opacity 0.3s ease, background-color 0.3s ease;
             user-select: none; /* Prevent text selection when clicking */
             opacity: 1; /* Fully visible by default */
         }
@@ -253,23 +284,83 @@
             pointer-events: none; /* Can't be clicked when hidden */
         }
 
-        /* HOVER EFFECT - Slightly more visible when you hover */
-        .theme-toggle:hover {
-            background-color: var(--toggle-bg);
-            opacity: 0.8;
+        /* DARK MODE STATE - When dark mode is active, change to dark navy blue */
+        body.dark-mode .theme-toggle {
+            background-color: #002846; /* Dark navy blue background for DARK MODE */
         }
 
-        /* TOGGLE ICON - The sun/moon icon */
-        .theme-toggle .icon {
-            line-height: 1; /* Remove extra spacing */
-            color: var(--toggle-icon);
+        /* TOGGLE KNOB - The circular slider that moves left/right */
+        .toggle-knob {
+            /* DIMENSIONS - Calculated: 24px height - 4px padding (2px top + 2px bottom) = 20px */
+            width: 20px;
+            height: 20px;
+            
+            /* STYLING - White circular knob */
+            background-color: #FFFFFF;
+            border-radius: 50%; /* Makes it perfectly circular */
+            
+            /* POSITIONING - Positioned within the toggle container */
+            position: absolute;
+            top: 2px; /* 2px from top edge (for padding) */
+            left: 2px; /* 2px from left edge (starts on left side) */
+            
+            /* ANIMATION - Smooth sliding effect (0.3 seconds) */
+            transition: transform 0.3s ease;
+            
+            /* FLEXBOX - For centering the image inside */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Prevent image overflow */
+            overflow: hidden;
         }
 
-        /* TOGGLE TEXT - Optional label (we'll keep it minimal) */
-        .theme-toggle .label {
-            font-size: 10px;
-            color: var(--toggle-icon);
-            font-family: 'JetBrains Mono', monospace;
+        /* KNOB IMAGE - The light_mode.png or dark_mode.png icon inside the knob */
+        .toggle-knob img {
+            width: 16px; /* Slightly smaller than knob for nice padding */
+            height: 16px;
+            object-fit: contain; /* Keeps image proportions */
+        }
+
+        /* DARK MODE STATE - Slide the knob to the right */
+        body.dark-mode .toggle-knob {
+            /* CALCULATION: 44px width - 20px knob width - 2px right padding = 22px */
+            transform: translateX(22px); /* Slides 22px to the right */
+        }
+
+        /* HOVER EFFECT - Subtle scale on hover */
+        .theme-toggle:hover .toggle-knob {
+            transform: scale(1.05); /* Slightly larger when hovering */
+        }
+
+        /* DARK MODE HOVER - Scale + slide combined */
+        body.dark-mode .theme-toggle:hover .toggle-knob {
+            transform: translateX(22px) scale(1.05); /* Keeps slide position + scale */
+        }
+
+        /* ========================================
+           CONTENT SWITCHER - Show/Hide Based on Mode
+           ======================================== */
+        
+        /* LIGHT MODE CONTENT - Visible in light mode, hidden in dark mode */
+        .light-mode-only {
+            display: block; /* Show by default (light mode) */
+        }
+        
+        /* When dark mode is active, hide light mode content */
+        body.dark-mode .light-mode-only {
+            display: none; /* Hide in dark mode */
+        }
+        
+        /* DARK MODE CONTENT - Hidden in light mode, visible in dark mode */
+        .dark-mode-only {
+            display: none; /* Hide by default (light mode) */
+        }
+        
+        /* When dark mode is active, show dark mode content */
+        body.dark-mode .dark-mode-only {
+            display: block; /* Show in dark mode */
         }
 
         /* RESPONSIVE - Adjustments for smaller screens */
@@ -295,9 +386,13 @@
         <!-- EMOJI DISPLAY BOX - Shows dynamic emoji in top-right corner of container -->
         <div class="emoji-display" id="emojiDisplay">🏙️</div>
         
-        <!-- DARK MODE TOGGLE - Button to switch between light and dark mode -->
+        <!-- DARK MODE TOGGLE SWITCH - Slider to switch between light and dark mode -->
         <div class="theme-toggle" id="themeToggle">
-            <span class="icon" id="themeIcon">☀️</span>
+            <!-- SLIDING KNOB - The white circle that moves left/right -->
+            <div class="toggle-knob">
+                <!-- The icon image inside the knob (changes between light_mode.png and dark_mode.png) -->
+                <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
+            </div>
         </div>
         
         <!-- HEADER: Photo and Contact Information -->
@@ -312,11 +407,11 @@
             <div class="contact-info">
                 <p>Mary Daniel</p>
                 <p>Tel Aviv, Israel</p>
-                <p>marydaniel.product@gmail.com</p>
-                <p>+972 52-6394238</p>
+                <p><a href="mailto:marydaniel.product@gmail.com">marydaniel.product@gmail.com</a></p>
+                <p><a href="https://w.app/fxbzxn" target="_blank">+972 52-6394238</a></p>
                 <p>
-                    <a href="#" target="_blank">[Portfolio]</a>
-                    <a href="#" target="_blank">[LinkedIn]</a>
+                    <a href="https://mary-daniel-portfolio.webflow.io/" target="_blank">[Portfolio]</a>
+                    <a href="https://www.linkedin.com/in/mary-daniel-676b161b1/" target="_blank">[LinkedIn]</a>
                 </p>
             </div>
         </div>
@@ -329,23 +424,33 @@
             <!-- Greeting -->
             <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Monday.com team,</span></p>
 
-            <!-- Paragraph 1 -->
-            <p>
+            <!-- Paragraph 1 - LIGHT MODE VERSION -->
+            <!-- This version shows in LIGHT MODE and talks about work/professional background -->
+            <p class="light-mode-only">
                 <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
                 intersection of AI products — software, hardware, and us humans. Over the past few years, 
                 I've helped launch and refine digital products at companies like <span class="hoverable-word" data-emoji="💡">Lightricks</span> and <span class="hoverable-word" data-emoji="🌐">Wix</span>, from 
                 early discovery through to production.
             </p>
+            
+            <!-- Paragraph 1 - DARK MODE VERSION -->
+            <!-- This version shows in DARK MODE and talks about hobbies/personal life -->
+            <p class="dark-mode-only">
+                When I'm not designing, you'll probably find me at Beit Hanna working out, covered in clay from a ceramics class, playing the flute, or planning my next hike trip with my partner Roi. 
+                I make a homemade sour cherry liqueur I'm oddly proud of — a small tribute to my amazing grandmother Lorika — and one day I'll finally find the time to get back to snowboarding and get my second star at scuba diving (hopefully without the ear infection this time).
+            </p>
 
-            <!-- Paragraph 2 -->
-            <p>
+            <!-- Paragraph 2 - LIGHT MODE ONLY -->
+            <!-- This paragraph about Lightricks only shows in light mode -->
+            <p class="light-mode-only">
                 At Lightricks, I was part of a team that built a new AI-based product from the ground up, 
                 using tools like <span class="hoverable-word" data-emoji="🛠️">Figma Make, Bolt, Cursor, Claude, and ChatGPT</span> to ideate and iterate faster. 
                 That experience deepened my curiosity for how AI can empower creativity and simplify complexity.
             </p>
 
-            <!-- Paragraph 3 -->
-            <p>
+            <!-- Paragraph 3 - LIGHT MODE ONLY -->
+            <!-- This paragraph about strengths only shows in light mode -->
+            <p class="light-mode-only">
                 I'm especially excited about the opportunity to learn, grow, and help shape foundational AI 
                 experiences that feel intuitive, empowering, and seamlessly integrated into users' daily workflows. 
                 I believe my strengths lie in my <span class="hoverable-word" data-emoji="✨">diligence, curiosity, broad perspective, and strong communication 
@@ -418,6 +523,9 @@
                 
                 // HIDE THE TOGGLE - When emoji appears, toggle fades to 0%
                 themeToggleButton.classList.add('hidden');
+                
+                // START PULSING - Add pulse animation when hovering
+                this.classList.add('pulsing');
             });
 
             // MOUSELEAVE EVENT - Triggers when mouse moves away from the word
@@ -428,6 +536,9 @@
                 
                 // SHOW THE TOGGLE - When emoji disappears, toggle fades back to 100%
                 themeToggleButton.classList.remove('hidden');
+                
+                // STOP PULSING - Remove pulse animation when mouse leaves
+                this.classList.remove('pulsing');
             });
         });
 
@@ -447,20 +558,21 @@
            DARK MODE TOGGLE SYSTEM
            ======================================== */
         /**
-         * DARK MODE TOGGLE
-         * ----------------
-         * This code makes the toggle button switch between light and dark mode
+         * DARK MODE TOGGLE SWITCH
+         * ----------------------
+         * This code makes the toggle switch slide between light and dark mode
          * and remembers your choice even after you close the browser!
          * 
          * HOW IT WORKS:
          * 1. Check if user has a saved preference (from previous visit)
          * 2. Apply dark mode if preference is saved as "dark"
          * 3. When toggle is clicked, switch modes and save preference
-         * 4. Update the sun/moon icon to match current mode
+         * 4. Update the toggle icon image (light_mode.png or dark_mode.png)
+         * 5. CSS automatically slides the knob using the transform property
          */
 
         // STEP 1: Get references (we already have themeToggleButton from above)
-        const themeIcon = document.getElementById('themeIcon');
+        const toggleIcon = document.getElementById('toggleIcon'); // The image inside the knob
         const body = document.body;
         // Get reference to the profile photo image element
         const profilePhoto = document.querySelector('.photo img');
@@ -473,13 +585,13 @@
         if (savedTheme === 'dark') {
             // If saved preference is dark, apply dark mode immediately
             body.classList.add('dark-mode');
-            themeIcon.textContent = '🌙'; // Moon icon for dark mode
+            toggleIcon.src = 'toggle/dark_mode.png'; // Dark mode icon in knob
             // CHANGE PHOTO - Switch to funny face in dark mode
             profilePhoto.src = 'Files/funny_face.png';
         } else {
             // If no preference or light mode, use light mode (default)
             body.classList.remove('dark-mode');
-            themeIcon.textContent = '☀️'; // Sun icon for light mode
+            toggleIcon.src = 'toggle/light_mode.png'; // Light mode icon in knob
             // CHANGE PHOTO - Use normal photo in light mode
             profilePhoto.src = 'Files/mary-daniel.png';
         }
@@ -493,14 +605,14 @@
             if (isDarkMode) {
                 // SWITCH TO LIGHT MODE
                 body.classList.remove('dark-mode'); // Remove dark mode class
-                themeIcon.textContent = '☀️'; // Change icon to sun
+                toggleIcon.src = 'toggle/light_mode.png'; // Change to light mode icon
                 localStorage.setItem('theme', 'light'); // Save preference
                 // CHANGE PHOTO - Back to normal photo
                 profilePhoto.src = 'Files/mary-daniel.png';
             } else {
                 // SWITCH TO DARK MODE
                 body.classList.add('dark-mode'); // Add dark mode class
-                themeIcon.textContent = '🌙'; // Change icon to moon
+                toggleIcon.src = 'toggle/dark_mode.png'; // Change to dark mode icon
                 localStorage.setItem('theme', 'dark'); // Save preference
                 // CHANGE PHOTO - Switch to funny face!
                 profilePhoto.src = 'Files/funny_face.png';
@@ -510,13 +622,20 @@
         /**
          * EDUCATIONAL NOTE:
          * -----------------
+         * HOW THE SLIDING ANIMATION WORKS:
+         * 
+         * 1. When we add the 'dark-mode' class to body, CSS automatically applies:
+         *    body.dark-mode .toggle-knob { transform: translateX(22px); }
+         * 
+         * 2. The transform property moves the knob 22 pixels to the right
+         * 
+         * 3. The transition property makes this movement smooth (0.3 seconds)
+         * 
+         * 4. We change the image source (light_mode.png ↔ dark_mode.png) to match
+         * 
          * localStorage.setItem('theme', 'dark') saves data in the browser
          * localStorage.getItem('theme') retrieves the saved data
          * This data persists even after closing the browser!
-         * 
-         * classList.add() and classList.remove() add/remove CSS classes
-         * When we add the 'dark-mode' class to body, all our CSS variables change
-         * This is why the colors switch automatically!
          */
     </script>
 </body>
