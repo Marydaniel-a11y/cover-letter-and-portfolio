@@ -88,6 +88,7 @@
             text-align: center;
             overflow: hidden; /* Crops image to fit */
             transition: background-color 0.3s ease; /* Smooth color transition */
+            position: relative; /* LOADING ANIMATION: Needed for absolute positioning of loading line */
         }
 
         /* When you add a real photo, this styles it */
@@ -95,6 +96,71 @@
             width: 100%;
             height: 100%;
             object-fit: cover; /* Makes sure photo fills the square nicely */
+            /* LOADING ANIMATION: Smooth transition for the blur/brightness effect */
+            transition: filter 0.3s ease;
+        }
+
+        /* ========================================
+           LOADING ANIMATION - Photo Switch Effect (Scan Line)
+           ======================================== */
+        
+        /* LOADING STATE - Applied to photo container during image switch */
+        /* This creates a gentle blurred and slightly dimmed effect */
+        .photo.loading img {
+            filter: blur(2px) brightness(0.8); /* GENTLE: Dims to 80% brightness with soft 2px blur */
+        }
+
+        /* SCAN OVERLAY - The glowing gradient line that scans from top to bottom */
+        /* This creates a sci-fi scanner effect with soft gradient edges */
+        .scan-overlay {
+            position: absolute; /* Positioned relative to .photo container */
+            top: 0; /* Covers the full photo height */
+            left: 0; /* Covers the full photo width */
+            width: 100%; /* Full width of photo */
+            height: 100%; /* Full height of photo */
+            
+            /* GRADIENT - Creates a horizontal glowing line with soft edges (WHITE) */
+            /* The gradient creates: transparent → faint glow → bright center → faint glow → transparent */
+            background: linear-gradient(to bottom,
+                transparent 46%,                           /* Transparent area above the line */
+                rgba(255, 255, 255, 0.1) 47%,             /* Very faint white glow starts */
+                rgba(255, 255, 255, 0.6) 49%,             /* Medium white glow */
+                #FFFFFF 50%,                               /* Bright white center line */
+                rgba(255, 255, 255, 0.6) 51%,             /* Medium white glow */
+                rgba(255, 255, 255, 0.1) 53%,             /* Very faint white glow ends */
+                transparent 54%                            /* Transparent area below the line */
+            );
+            
+            filter: blur(0.5px); /* Slight blur for softer, smoother appearance */
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); /* White glow around the line */
+            
+            /* ANIMATION - Starts above the image (hidden) */
+            transform: translateY(-100%); /* Positioned completely above the photo */
+            opacity: 0; /* Hidden by default */
+        }
+
+        /* LOADING ACTIVE - When loading class is added, animate the scan line */
+        .photo.loading .scan-overlay {
+            /* ANIMATION: scanDown moves the line from top to bottom with fade in/out */
+            animation: scanDown 1.2s ease-in-out;
+        }
+
+        /* KEYFRAMES - Defines how the scan line moves from top to bottom with fade effects */
+        @keyframes scanDown {
+            0% {
+                transform: translateY(-100%); /* Start above the photo (hidden) */
+                opacity: 0; /* Start invisible */
+            }
+            10% {
+                opacity: 1; /* Quick fade in */
+            }
+            90% {
+                opacity: 1; /* Stay visible while scanning */
+            }
+            100% {
+                transform: translateY(100%); /* End below the photo (hidden) */
+                opacity: 0; /* Fade out at the end */
+            }
         }
 
         /* CONTACT INFO - Name, location, email, phone */
@@ -419,9 +485,11 @@
         <!-- HEADER: Photo and Contact Information -->
         <div class="header">
             <!-- Square Photo (replace with your actual photo) -->
-            <div class="photo">
+            <div class="photo" id="photoContainer">
                 <!-- Your photo is now connected! -->
                 <img src="Files/mary-daniel.png" alt="Mary Daniel">
+                <!-- SCAN OVERLAY - The glowing gradient line that scans during image switch -->
+                <div class="scan-overlay"></div>
             </div>
             
             <!-- Contact Details -->
@@ -603,6 +671,8 @@
         const body = document.body;
         // Get reference to the profile photo image element
         const profilePhoto = document.querySelector('.photo img');
+        // Get reference to the photo container for loading animation
+        const photoContainer = document.getElementById('photoContainer');
 
         // STEP 2: Check if user has a saved preference
         // localStorage is like a mini database in the browser that saves data
@@ -629,6 +699,9 @@
             // Check if dark mode is currently active
             const isDarkMode = body.classList.contains('dark-mode');
             
+            // LOADING ANIMATION - Add loading class to trigger blur and line animation
+            photoContainer.classList.add('loading');
+            
             if (isDarkMode) {
                 // SWITCH TO LIGHT MODE
                 body.classList.remove('dark-mode'); // Remove dark mode class
@@ -644,6 +717,13 @@
                 // CHANGE PHOTO - Switch to funny face!
                 profilePhoto.src = 'Files/funny_face.png';
             }
+            
+            // LOADING ANIMATION - Remove loading class after animation completes
+            // setTimeout waits 1200ms (1.2 seconds) before removing the loading state
+            // This matches the animation duration defined in CSS (1.2s)
+            setTimeout(function() {
+                photoContainer.classList.remove('loading');
+            }, 1200);
         });
 
         /**
