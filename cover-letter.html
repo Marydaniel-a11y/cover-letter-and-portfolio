@@ -217,7 +217,7 @@
            HOVER PULSE ANIMATION - Bouncing and glowing effect for hoverable words
            ======================================== */
         
-        /* KEYFRAMES - Defines the hover pulse animation sequence */
+        /* KEYFRAMES - Defines the hover pulse animation sequence for LIGHT MODE */
         /* This creates a bounce + glow effect that's more dynamic */
         @keyframes hoverPulse {
             0% {
@@ -234,22 +234,43 @@
             }
         }
         
+        /* KEYFRAMES - Defines the hover pulse animation sequence for DARK MODE */
+        /* Same bounce effect, but with PURPLE glow instead of red */
+        @keyframes hoverPulsePurple {
+            0% {
+                transform: translateY(0); /* Start at normal position */
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6); /* No glow at start - purple color (#A78BFA) */
+            }
+            50% {
+                transform: translateY(-2px); /* Bounce up 2 pixels */
+                text-shadow: 0 0 8px rgba(167, 139, 250, 0.4); /* Add purple glow */
+            }
+            100% {
+                transform: translateY(0); /* Return to normal position */
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6); /* Glow fades away */
+            }
+        }
+        
         /* HOVERABLE WORDS - Words that trigger emoji changes */
         .hoverable-word {
-            cursor: pointer; /* Pointer cursor to show it's interactive */
-            color: var(--accent-red); /* Red color by default */
+            color: var(--accent-red); /* Red in light mode, purple in dark mode */
             transition: transform 0.2s; /* Smooth transition for any transform changes */
         }
         
-        /* PULSING STATE - Apply the hover pulse animation when hovering */
+        /* PULSING STATE - Apply the hover pulse animation when hovering in LIGHT MODE */
         .hoverable-word.pulsing {
             animation: hoverPulse 1.6s ease-in-out infinite; /* 1.6 seconds per cycle, smooth easing, repeats forever */
+        }
+        
+        /* PULSING STATE - Apply the PURPLE hover pulse animation in DARK MODE */
+        body.dark-mode .hoverable-word.pulsing {
+            animation: hoverPulsePurple 1.6s ease-in-out infinite; /* Same timing, but with purple glow! */
         }
 
         /* Optional: Add subtle hover effect on hoverable words */
         .hoverable-word:hover {
             /* UPDATED: Now uses CSS variable for dark mode support */
-            color: var(--accent-red); /* Stays red on hover */
+            color: var(--accent-red); /* Stays red in light mode, purple in dark mode */
         }
 
         /* ========================================
@@ -436,7 +457,13 @@
             <!-- Paragraph 1 - DARK MODE VERSION -->
             <!-- This version shows in DARK MODE and talks about hobbies/personal life -->
             <p class="dark-mode-only">
-                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay from a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, playing the flute, or planning my next hike trip with my smart-funny-great husband; <span class="hoverable-word" data-emoji="👑">Roi</span>. I also make an <span class="hoverable-word" data-emoji="🍷">homemade sour cherry liqueur (Vishnya)</span> I'm very proud of — a small memory from and for my amazing grandmother Lorika, and one day I'll finally find the time to get <span class="hoverable-word" data-emoji="🏂">snowboarding</span> again, and (one last thing!) get my second star at <span class="hoverable-word" data-emoji="🐠">scuba diving</span> (hopefully without the ear infection this time).
+                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, playing the flute, or planning my next hiking trip with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
+            </p>
+
+            <!-- Paragraph 2 - DARK MODE ONLY -->
+            <!-- Second paragraph for dark mode about traditions and hobbies -->
+            <p class="dark-mode-only">
+                I also make a <span class="hoverable-word" data-emoji="🍷">homemade sour cherry liqueur (Vishnya)</span> that I'm very proud of — a small tradition inspired by my amazing grandmother, Lorika. And one day, I'll finally find the time to go <span class="hoverable-word" data-emoji="🏂">snowboarding</span> again and (hopefully!) earn my second star in <span class="hoverable-word" data-emoji="🐠">scuba diving</span> — this time without the ear infection.
             </p>
 
             <!-- Paragraph 2 - LIGHT MODE ONLY -->
