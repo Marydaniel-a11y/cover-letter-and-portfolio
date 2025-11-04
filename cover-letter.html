@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mary Daniel - Cover Letter</title>
     
-    <!-- Import JetBrains Mono font - This is the typewriter-style font from the Figma design -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
-        /* RESET - Start with clean slate */
+        /* RESET */
         * {
             margin: 0;
             padding: 0;
@@ -19,480 +18,591 @@
         }
 
         /* ========================================
-           CSS VARIABLES - Color System for Light/Dark Mode
+           CSS VARIABLES - Color System
            ======================================== */
-        /* These are like color "shortcuts" that we can change all at once */
         :root {
-            /* LIGHT MODE COLORS (Default) */
-            --bg-color: #F9F3EF; /* Warm beige background */
-            --text-color: #2B1F38; /* Deep purple-black text */
-            --text-muted: rgba(43, 31, 56, 0.5); /* Muted text at 50% opacity */
-            --photo-bg: #e0e0e0; /* Light gray for photo placeholder */
-            --accent-red: #E74C58; /* Warm red for highlights */
-            --toggle-bg: rgba(43, 31, 56, 0.1); /* Toggle button background */
-            --toggle-icon: #2B1F38; /* Toggle icon color */
+            --bg-color: #F9F3EF;
+            --text-color: #2B1F38;
+            --text-muted: rgba(43, 31, 56, 0.5);
+            --photo-bg: #e0e0e0;
+            --accent-red: #E74C58;
+            --toggle-bg: rgba(43, 31, 56, 0.1);
+            --toggle-icon: #2B1F38;
         }
 
-        /* DARK MODE COLORS - Applied when .dark-mode class is on body */
         body.dark-mode {
-            --bg-color: #18141D; /* Deep purple-black background - UPDATED */
-            --text-color: #F0E9F5; /* Primary text color - UPDATED */
-            --text-muted: #B8ACC4; /* Secondary text color - UPDATED */
-            --photo-bg: #2d2438; /* Darker gray for photo placeholder */
-            --accent-red: #A78BFA; /* Accent purple for highlights - UPDATED */
-            --toggle-bg: rgba(249, 243, 239, 0.1); /* Light toggle background */
-            --toggle-icon: #F0E9F5; /* Light toggle icon - UPDATED */
+            --bg-color: #18141D;
+            --text-color: #F0E9F5;
+            --text-muted: #B8ACC4;
+            --photo-bg: #2d2438;
+            --accent-red: #A78BFA;
+            --toggle-bg: rgba(249, 243, 239, 0.1);
+            --toggle-icon: #F0E9F5;
         }
 
-        /* BODY - The background that covers the entire page */
+        /* BODY */
         body {
-            font-family: 'JetBrains Mono', monospace; /* Typewriter-style font */
-            /* UPDATED: Now uses CSS variable that changes with dark mode */
+            font-family: 'JetBrains Mono', monospace;
             background-color: var(--bg-color); 
             color: var(--text-color);
-            padding: 32px; /* Space around the edges */
-            font-size: 12px; /* Base font size - increased by 2px for better readability */
-            line-height: 20px; /* Line height for comfortable reading */
-            /* SMOOTH TRANSITION - Makes color changes gradual, not instant */
+            padding: 32px;
+            font-size: 12px;
+            line-height: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* CONTAINER - The main document area (595px width matches the Figma design) */
+        /* CONTAINER */
         .container {
-            max-width: 595px; /* Exact width from Figma design */
-            margin: 0 auto; /* Centers the document horizontally */
-            position: relative; /* Allows us to position elements inside */
-            min-height: 858px; /* Minimum height to match Figma layout */
+            max-width: 595px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 858px;
         }
 
-        /* HEADER SECTION - Contains photo and contact info at the top */
+        /* HEADER SECTION */
         .header {
-            display: flex; /* Flexbox for layout */
-            flex-direction: column; /* Stack items vertically */
-            gap: 8px; /* Small gap between photo and contact info */
-            margin-bottom: 20px; /* Space before the date */
-            width: 172px; /* Fixed width to match Figma */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            width: 172px;
         }
 
-        /* PHOTO - Square photo at top left (not circular like before!) */
+        /* PHOTO */
         .photo {
-            width: 172px; /* UPDATED: Now fills entire header width */
-            height: 172px; /* UPDATED: Keeps square proportions */
-            /* UPDATED: Now uses CSS variable for dark mode support */
+            width: 172px;
+            height: 172px;
             background-color: var(--photo-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px; /* Small text size - increased by 2px */
+            font-size: 10px;
             color: #666;
             text-align: center;
-            overflow: hidden; /* Crops image to fit */
-            transition: background-color 0.3s ease; /* Smooth color transition */
-            position: relative; /* LOADING ANIMATION: Needed for absolute positioning of loading line */
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+            position: relative;
         }
 
-        /* When you add a real photo, this styles it */
         .photo img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Makes sure photo fills the square nicely */
-            /* LOADING ANIMATION: Smooth transition for the blur/brightness effect */
+            object-fit: cover;
             transition: filter 0.3s ease;
         }
 
         /* ========================================
-           LOADING ANIMATION - Photo Switch Effect (Scan Line)
+           LOADING ANIMATION - Photo Switch Effect
            ======================================== */
         
-        /* LOADING STATE - Applied to photo container during image switch */
-        /* This creates a gentle blurred and slightly dimmed effect */
         .photo.loading img {
-            filter: blur(2px) brightness(0.8); /* GENTLE: Dims to 80% brightness with soft 2px blur */
+            filter: blur(2px) brightness(0.8);
         }
 
-        /* SCAN OVERLAY - The glowing gradient line that scans from top to bottom */
-        /* This creates a sci-fi scanner effect with soft gradient edges */
         .scan-overlay {
-            position: absolute; /* Positioned relative to .photo container */
-            top: 0; /* Covers the full photo height */
-            left: 0; /* Covers the full photo width */
-            width: 100%; /* Full width of photo */
-            height: 100%; /* Full height of photo */
-            
-            /* GRADIENT - Creates a horizontal glowing line with soft edges (WHITE) */
-            /* The gradient creates: transparent → faint glow → bright center → faint glow → transparent */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(to bottom,
-                transparent 46%,                           /* Transparent area above the line */
-                rgba(255, 255, 255, 0.1) 47%,             /* Very faint white glow starts */
-                rgba(255, 255, 255, 0.6) 49%,             /* Medium white glow */
-                #FFFFFF 50%,                               /* Bright white center line */
-                rgba(255, 255, 255, 0.6) 51%,             /* Medium white glow */
-                rgba(255, 255, 255, 0.1) 53%,             /* Very faint white glow ends */
-                transparent 54%                            /* Transparent area below the line */
+                transparent 46%,
+                rgba(255, 255, 255, 0.1) 47%,
+                rgba(255, 255, 255, 0.6) 49%,
+                #FFFFFF 50%,
+                rgba(255, 255, 255, 0.6) 51%,
+                rgba(255, 255, 255, 0.1) 53%,
+                transparent 54%
             );
-            
-            filter: blur(0.5px); /* Slight blur for softer, smoother appearance */
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); /* White glow around the line */
-            
-            /* ANIMATION - Starts above the image (hidden) */
-            transform: translateY(-100%); /* Positioned completely above the photo */
-            opacity: 0; /* Hidden by default */
+            filter: blur(0.5px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            transform: translateY(-100%);
+            opacity: 0;
         }
 
-        /* LOADING ACTIVE - When loading class is added, animate the scan line */
         .photo.loading .scan-overlay {
-            /* ANIMATION: scanDown moves the line from top to bottom with fade in/out */
             animation: scanDown 1.2s ease-in-out;
         }
 
-        /* KEYFRAMES - Defines how the scan line moves from top to bottom with fade effects */
         @keyframes scanDown {
             0% {
-                transform: translateY(-100%); /* Start above the photo (hidden) */
-                opacity: 0; /* Start invisible */
+                transform: translateY(-100%);
+                opacity: 0;
             }
             10% {
-                opacity: 1; /* Quick fade in */
+                opacity: 1;
             }
             90% {
-                opacity: 1; /* Stay visible while scanning */
+                opacity: 1;
             }
             100% {
-                transform: translateY(100%); /* End below the photo (hidden) */
-                opacity: 0; /* Fade out at the end */
+                transform: translateY(100%);
+                opacity: 0;
             }
         }
 
-        /* CONTACT INFO - Name, location, email, phone */
+        /* CONTACT INFO */
         .contact-info {
-            font-size: 10px; /* Small text - increased by 2px */
-            line-height: normal; /* Tighter line spacing */
-            /* UPDATED: Now uses CSS variable for dark mode support */
+            font-size: 10px;
+            line-height: normal;
             color: var(--text-color);
         }
 
-        /* Links in the contact info */
         .contact-info a {
-            /* UPDATED: Now uses CSS variable for dark mode support */
             color: var(--text-color);
-            text-decoration: underline; /* Underlined links */
+            text-decoration: underline;
         }
 
         .contact-info a:hover {
-            opacity: 0.7; /* Slight fade on hover */
+            opacity: 0.7;
         }
 
-        /* DATE - The date line (Nov 2, 2025) */
+        /* DATE */
         .date {
-            font-size: 12px; /* Increased by 2px */
-            margin-bottom: 47px; /* Exact spacing from Figma to greeting */
-            /* UPDATED: Now uses CSS variable for dark mode support */
+            font-size: 12px;
+            margin-bottom: 47px;
             color: var(--text-color);
         }
 
-        /* LETTER CONTENT - The main body of the letter */
+        /* LETTER CONTENT */
         .letter-content {
-            /* Removed max-width to allow full container width (595px) */
+            position: relative;
             display: flex;
             flex-direction: column;
-            gap: 12px; /* Space between paragraphs */
-            /* FIXED HEIGHT - Keeps signature in same position regardless of content */
-            height: 350px; /* Fixed height to maintain consistent layout between light/dark modes */
-            min-height: 350px; /* Ensures minimum height is maintained */
+            gap: 12px;
+            height: 350px;
+            min-height: 350px;
         }
 
-        /* GREETING - The "Hi Monday.com team," line */
+        /* GREETING */
         .greeting {
-            font-weight: 700; /* Bold */
-            font-size: 12px; /* Increased by 2px */
+            font-weight: 700;
+            font-size: 12px;
         }
 
-        /* PARAGRAPHS - The main text blocks */
+        /* PARAGRAPHS */
         .letter-content p {
-            margin: 0; /* Reset default margins */
-            font-size: 12px; /* Increased by 2px for better readability */
-            line-height: 20px; /* Comfortable reading space */
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
         }
 
-        /* SIGNATURE SECTION - The closing with signature */
+        /* SIGNATURE SECTION */
         .signature-section {
-            margin-top: 20px; /* Space before signature */
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
-            align-items: flex-end; /* Aligns to the right side */
-            gap: 3px; /* Small gap between elements */
+            align-items: flex-end;
+            gap: 3px;
         }
 
-        /* CLOSING TEXT - "Thanks, Mary Daniel" */
+        /* CLOSING TEXT */
         .closing {
-            font-size: 12px; /* Increased by 2px */
+            font-size: 12px;
             text-align: right;
             line-height: normal;
         }
 
-        /* JOB TITLE - "Product Designer" */
+        /* JOB TITLE */
         .job-title {
-            font-size: 12px; /* Increased by 2px */
+            font-size: 12px;
             text-align: right;
         }
 
-        /* SIGNATURE IMAGE - The handwritten signature graphic */
+        /* SIGNATURE IMAGE */
         .signature-image {
-            width: 48.954px; /* Exact dimensions from Figma */
+            width: 48.954px;
             height: 59.725px;
             margin-top: 5px;
         }
 
-
-        /* HOVER EFFECT - Changes color when mouse hovers over the skills text */
+        /* HOVER EFFECT */
         .highlight-skills {
-            /* transition creates a smooth color change animation */
-            transition: color 0.3s ease; /* 0.3 seconds smooth transition */
-            /* cursor stays as default text cursor (no pointer hand) */
+            transition: color 0.3s ease;
         }
 
-        /* When mouse hovers over the skills text, change color to accent red */
         .highlight-skills:hover {
-            /* UPDATED: Now uses CSS variable for dark mode support */
             color: var(--accent-red);
         }
 
         /* ========================================
-           EMOJI DISPLAY BOX - Top Right Corner
+           EMOJI DISPLAY BOX
            ======================================== */
         
-        /* EMOJI BOX - Positioned inside the container */
         .emoji-display {
-            position: absolute; /* Positioned relative to the .container */
-            top: 0; /* Align with top of container */
-            right: 0; /* Align with right side of container */
-            font-size: 34px; /* Large emoji size - increased by 2px */
-            line-height: 1; /* Prevents extra spacing around emoji */
-            opacity: 0; /* Start invisible */
-            transition: opacity 0.3s ease; /* Smooth fade in/out animation */
-            pointer-events: none; /* Emoji won't block clicks on other elements */
-            z-index: 1000; /* Ensures emoji appears above other content */
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 34px;
+            line-height: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        /* When emoji box is visible (we'll add this class with JavaScript) */
         .emoji-display.visible {
-            opacity: 1; /* Fully visible */
+            opacity: 1;
         }
 
         /* ========================================
-           HOVER PULSE ANIMATION - Bouncing and glowing effect for hoverable words
+           HOVER PULSE ANIMATION
            ======================================== */
         
-        /* KEYFRAMES - Defines the hover pulse animation sequence for LIGHT MODE */
-        /* This creates a bounce + glow effect that's more dynamic */
         @keyframes hoverPulse {
             0% {
-                transform: translateY(0); /* Start at normal position */
-                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6); /* No glow at start */
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6);
             }
             50% {
-                transform: translateY(-2px); /* Bounce up 2 pixels */
-                text-shadow: 0 0 8px rgba(255, 0, 0, 0.4); /* Add red glow */
+                transform: translateY(-2px);
+                text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
             }
             100% {
-                transform: translateY(0); /* Return to normal position */
-                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6); /* Glow fades away */
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6);
             }
         }
         
-        /* KEYFRAMES - Defines the hover pulse animation sequence for DARK MODE */
-        /* Same bounce effect, but with PURPLE glow instead of red */
         @keyframes hoverPulsePurple {
             0% {
-                transform: translateY(0); /* Start at normal position */
-                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6); /* No glow at start - purple color (#A78BFA) */
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6);
             }
             50% {
-                transform: translateY(-2px); /* Bounce up 2 pixels */
-                text-shadow: 0 0 8px rgba(167, 139, 250, 0.4); /* Add purple glow */
+                transform: translateY(-2px);
+                text-shadow: 0 0 8px rgba(167, 139, 250, 0.4);
             }
             100% {
-                transform: translateY(0); /* Return to normal position */
-                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6); /* Glow fades away */
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6);
             }
         }
         
-        /* HOVERABLE WORDS - Words that trigger emoji changes */
         .hoverable-word {
-            color: var(--accent-red); /* Red in light mode, purple in dark mode */
-            transition: transform 0.2s; /* Smooth transition for any transform changes */
+            color: var(--accent-red);
+            transition: transform 0.2s;
         }
         
-        /* PULSING STATE - Apply the hover pulse animation when hovering in LIGHT MODE */
         .hoverable-word.pulsing {
-            animation: hoverPulse 1.6s ease-in-out infinite; /* 1.6 seconds per cycle, smooth easing, repeats forever */
+            animation: hoverPulse 1.6s ease-in-out infinite;
         }
         
-        /* PULSING STATE - Apply the PURPLE hover pulse animation in DARK MODE */
         body.dark-mode .hoverable-word.pulsing {
-            animation: hoverPulsePurple 1.6s ease-in-out infinite; /* Same timing, but with purple glow! */
+            animation: hoverPulsePurple 1.6s ease-in-out infinite;
         }
 
-        /* Optional: Add subtle hover effect on hoverable words */
         .hoverable-word:hover {
-            /* UPDATED: Now uses CSS variable for dark mode support */
-            color: var(--accent-red); /* Stays red in light mode, purple in dark mode */
+            color: var(--accent-red);
         }
 
         /* ========================================
-           DARK MODE TOGGLE SWITCH - Top Right Corner
+           DARK MODE TOGGLE SWITCH
            ======================================== */
         
-        /* TOGGLE SWITCH CONTAINER - The outer pill-shaped track */
         .theme-toggle {
-            position: absolute; /* Positioned relative to the .container */
-            top: 0; /* Align with top of container */
-            right: 0; /* Align with right side of container */
-            z-index: 1001; /* Above emoji (which is z-index: 1000) */
-            
-            /* DIMENSIONS - Exact measurements from Figma */
-            width: 44px; /* Total width of the toggle */
-            height: 24px; /* Total height of the toggle */
-            
-            /* STYLING - Match Figma design */
-            background-color: #002846; /* Dark navy background for LIGHT MODE */
-            border-radius: 16px; /* Rounded pill shape (16px from Figma) */
-            
-            cursor: pointer; /* Hand cursor to show it's clickable */
-            /* ANIMATION - Smooth color transition when switching modes */
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1001;
+            width: 44px;
+            height: 24px;
+            background-color: #002846;
+            border-radius: 16px;
+            cursor: pointer;
             transition: opacity 0.3s ease, background-color 0.3s ease;
-            user-select: none; /* Prevent text selection when clicking */
-            opacity: 1; /* Fully visible by default */
+            user-select: none;
+            opacity: 1;
         }
 
-        /* HIDE TOGGLE - When emoji is visible, toggle fades to 0% */
         .theme-toggle.hidden {
-            opacity: 0; /* Completely invisible */
-            pointer-events: none; /* Can't be clicked when hidden */
+            opacity: 0;
+            pointer-events: none;
         }
 
-        /* DARK MODE STATE - When dark mode is active, change to blue */
         body.dark-mode .theme-toggle {
-            background-color: #72C3EC; /* Blue background for DARK MODE - UPDATED */
+            background-color: #72C3EC;
         }
 
-        /* TOGGLE KNOB - The circular slider that moves left/right */
         .toggle-knob {
-            /* DIMENSIONS - Calculated: 24px height - 4px padding (2px top + 2px bottom) = 20px */
             width: 20px;
             height: 20px;
-            
-            /* STYLING - White circular knob */
             background-color: #FFFFFF;
-            border-radius: 50%; /* Makes it perfectly circular */
-            
-            /* POSITIONING - Positioned within the toggle container */
+            border-radius: 50%;
             position: absolute;
-            top: 2px; /* 2px from top edge (for padding) */
-            left: 2px; /* 2px from left edge (starts on left side) */
-            
-            /* ANIMATION - Smooth sliding effect (0.3 seconds) */
+            top: 2px;
+            left: 2px;
             transition: transform 0.3s ease;
-            
-            /* FLEXBOX - For centering the image inside */
             display: flex;
             align-items: center;
             justify-content: center;
-            
-            /* Prevent image overflow */
             overflow: hidden;
         }
 
-        /* KNOB IMAGE - The light_mode.png or dark_mode.png icon inside the knob */
         .toggle-knob img {
-            width: 16px; /* Slightly smaller than knob for nice padding */
+            width: 16px;
             height: 16px;
-            object-fit: contain; /* Keeps image proportions */
+            object-fit: contain;
         }
 
-        /* DARK MODE STATE - Slide the knob to the right */
         body.dark-mode .toggle-knob {
-            /* CALCULATION: 44px width - 20px knob width - 2px right padding = 22px */
-            transform: translateX(22px); /* Slides 22px to the right */
+            transform: translateX(22px);
         }
 
-        /* HOVER EFFECT - Subtle scale on hover */
         .theme-toggle:hover .toggle-knob {
-            transform: scale(1.05); /* Slightly larger when hovering */
+            transform: scale(1.05);
         }
 
-        /* DARK MODE HOVER - Scale + slide combined */
         body.dark-mode .theme-toggle:hover .toggle-knob {
-            transform: translateX(22px) scale(1.05); /* Keeps slide position + scale */
+            transform: translateX(22px) scale(1.05);
         }
 
         /* ========================================
-           CONTENT SWITCHER - Show/Hide Based on Mode
+           TOOLTIP
            ======================================== */
         
-        /* LIGHT MODE CONTENT - Visible in light mode, hidden in dark mode */
-        .light-mode-only {
-            display: block; /* Show by default (light mode) */
+        .toggle-tooltip {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: calc(100% + 10px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
         }
         
-        /* When dark mode is active, hide light mode content */
-        body.dark-mode .light-mode-only {
-            display: none; /* Hide in dark mode */
+        .toggle-tooltip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -4px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid rgba(0, 0, 0, 0.8);
         }
         
-        /* DARK MODE CONTENT - Hidden in light mode, visible in dark mode */
-        .dark-mode-only {
-            display: none; /* Hide by default (light mode) */
-        }
-        
-        /* When dark mode is active, show dark mode content */
-        body.dark-mode .dark-mode-only {
-            display: block; /* Show in dark mode */
+        .theme-toggle:hover .toggle-tooltip {
+            opacity: 1;
         }
 
-        /* RESPONSIVE - Adjustments for smaller screens */
+        body.dark-mode .toggle-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2B1F38;
+        }
+
+        body.dark-mode .toggle-tooltip::before {
+            border-left: 4px solid rgba(255, 255, 255, 0.95);
+        }
+
+        /* ========================================
+           CONTENT SWITCHER
+           ======================================== */
+        
+        .light-mode-only {
+            display: block;
+        }
+        
+        body.dark-mode .light-mode-only {
+            display: none;
+        }
+        
+        .dark-mode-only {
+            display: none;
+        }
+        
+        body.dark-mode .dark-mode-only {
+            display: block;
+        }
+
+        /* ========================================
+           SKELETON LOADING
+           ======================================== */
+        
+        .skeleton-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .skeleton-loader.active {
+            display: flex;
+        }
+        
+        .skeleton-paragraph {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .skeleton-line {
+            height: 20px;
+            background: linear-gradient(
+                90deg, 
+                var(--text-muted) 0%,
+                var(--text-color) 50%,
+                var(--text-muted) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 4px;
+            opacity: 0.15;
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-line.full { width: 100%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.medium { width: 85%; }
+        .skeleton-line.short { width: 60%; }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .letter-content.loading > p {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             body {
-                padding: 20px; /* Less padding on mobile */
+                padding: 16px;
+                font-size: 11px;
+                line-height: 18px;
             }
 
             .container {
-                max-width: 100%; /* Full width on mobile */
+                max-width: 100%;
+                min-height: auto;
+            }
+
+            .header {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+
+            .photo {
+                width: 120px;
+                height: 120px;
+            }
+
+            .contact-info {
+                font-size: 9px;
+            }
+
+            .date {
+                font-size: 11px;
+                margin-bottom: 24px;
             }
 
             .letter-content {
-                max-width: 100%; /* Full width on mobile */
+                max-width: 100%;
+                height: auto;
+                min-height: auto;
+                gap: 10px;
+            }
+
+            .letter-content p {
+                font-size: 11px;
+                line-height: 18px;
+            }
+
+            .signature-section {
+                margin-top: 24px;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .closing {
+                font-size: 11px;
+                text-align: left;
+            }
+
+            .job-title {
+                font-size: 11px;
+                text-align: left;
+            }
+
+            .signature-image {
+                width: 40px;
+                height: auto;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 22px;
+            }
+
+            .toggle-knob {
+                width: 18px;
+                height: 18px;
+            }
+
+            .toggle-knob img {
+                width: 14px;
+                height: 14px;
+            }
+
+            body.dark-mode .toggle-knob {
+                transform: translateX(20px);
+            }
+
+            body.dark-mode .theme-toggle:hover .toggle-knob {
+                transform: translateX(20px) scale(1.05);
+            }
+
+            .emoji-display {
+                font-size: 28px;
+                top: 2px;
+                right: 2px;
+            }
+
+            .greeting {
+                font-size: 11px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- MAIN DOCUMENT CONTAINER -->
     <div class="container">
         
-        <!-- EMOJI DISPLAY BOX - Shows dynamic emoji in top-right corner of container -->
         <div class="emoji-display" id="emojiDisplay">🏙️</div>
         
-        <!-- DARK MODE TOGGLE SWITCH - Slider to switch between light and dark mode -->
         <div class="theme-toggle" id="themeToggle">
-            <!-- SLIDING KNOB - The white circle that moves left/right -->
             <div class="toggle-knob">
-                <!-- The icon image inside the knob (changes between light_mode.png and dark_mode.png) -->
                 <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
             </div>
+            <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
         </div>
         
-        <!-- HEADER: Photo and Contact Information -->
+        <!-- HEADER -->
         <div class="header">
-            <!-- Square Photo (replace with your actual photo) -->
             <div class="photo" id="photoContainer">
-                <!-- Your photo is now connected! -->
                 <img src="Files/mary-daniel.png" alt="Mary Daniel">
-                <!-- SCAN OVERLAY - The glowing gradient line that scans during image switch -->
                 <div class="scan-overlay"></div>
             </div>
             
-            <!-- Contact Details -->
             <div class="contact-info">
                 <p>Mary Daniel</p>
                 <p>Tel Aviv, Israel</p>
@@ -505,45 +615,59 @@
             </div>
         </div>
 
-        <!-- DATE -->
-        <div class="date">Nov 3, 2025</div>
+        <div class="date">Nov 2, 2025</div>
 
-        <!-- LETTER BODY -->
-        <div class="letter-content">
-            <!-- Greeting -->
-            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Simply team,</span></p>
+        <!-- LETTER CONTENT -->
+        <div class="letter-content" id="letterContent">
+            <div class="skeleton-loader" id="skeletonLoader">
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line short"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line medium"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line medium"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </div>
+            
+            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Monday.com team,</span></p>
 
-            <!-- Paragraph 1 - LIGHT MODE VERSION -->
-            <!-- This version shows in LIGHT MODE and talks about work/professional background -->
             <p class="light-mode-only">
-                <span class="hoverable-word" data-emoji="👋 ">I'm Mary!</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
+                <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
                 intersection of AI products — software, hardware, and us humans. Over the past few years, 
                 I've helped launch and refine digital products at companies like <span class="hoverable-word" data-emoji="💡">Lightricks</span> and <span class="hoverable-word" data-emoji="🌐">Wix</span>, from 
                 early discovery through to production.
             </p>
             
-            <!-- Paragraph 1 - DARK MODE VERSION -->
-            <!-- This version shows in DARK MODE and talks about hobbies/personal life -->
             <p class="dark-mode-only">
-                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, playing the flute, or planning my next hiking trip with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
+                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, <span class="hoverable-word" data-emoji="🎶">playing the flute</span>, or planning my next <span class="hoverable-word" data-emoji="⛰️">hiking trip</span> with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
             </p>
 
-            <!-- Paragraph 2 - DARK MODE ONLY -->
-            <!-- Second paragraph for dark mode about traditions and hobbies -->
             <p class="dark-mode-only">
                 I also make a <span class="hoverable-word" data-emoji="🍷">homemade sour cherry liqueur (Vishnya)</span> that I'm very proud of — a small tradition inspired by my amazing grandmother, Lorika. And one day, I'll finally find the time to go <span class="hoverable-word" data-emoji="🏂">snowboarding</span> again and (hopefully!) earn my second star in <span class="hoverable-word" data-emoji="🐠">scuba diving</span> — this time without the ear infection.
             </p>
 
-            <!-- Paragraph 2 - LIGHT MODE ONLY -->
-            <!-- This paragraph about Lightricks only shows in light mode -->
             <p class="light-mode-only">
                 At Lightricks, I was part of a team that built a new AI-based product from the ground up, 
                 using tools like <span class="hoverable-word" data-emoji="🛠️">Figma Make, Bolt, Cursor, Claude, and ChatGPT</span> to ideate and iterate faster. 
                 That experience deepened my curiosity for how AI can empower creativity and simplify complexity.
             </p>
 
-            <!-- Paragraph 3 - LIGHT MODE ONLY -->
-            <!-- This paragraph about strengths only shows in light mode -->
             <p class="light-mode-only">
                 I'm especially excited about the opportunity to learn, grow, and help shape foundational AI 
                 experiences that feel intuitive, empowering, and seamlessly integrated into users' daily workflows. 
@@ -552,198 +676,98 @@
             </p>
         </div>
 
-        <!-- SIGNATURE AREA -->
+        <!-- SIGNATURE -->
         <div class="signature-section">
-            <!-- Closing text -->
             <div class="closing">
                 <p><span class="hoverable-word" data-emoji="🙏">Thanks,</span></p>
                 <p>Mary Daniel</p>
             </div>
             
-            <!-- Job title - Different text for light mode vs dark mode -->
             <p class="job-title light-mode-only">Product Designer</p>
             <p class="job-title dark-mode-only">Human Being</p>
             
-            <!-- Handwritten signature (you can add an image of your signature here) -->
             <div class="signature-image">
-                <!-- Your signature is now connected! -->
                 <img src="Files/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
         </div>
 
-
     </div>
 
     <!-- ========================================
-         JAVASCRIPT - Dynamic Emoji System
+         JAVASCRIPT
          ======================================== -->
     <script>
-        /**
-         * EMOJI HOVER SYSTEM
-         * ------------------
-         * This code makes the emoji in the top-right corner change
-         * when you hover over specific words in the letter.
-         * 
-         * HOW IT WORKS:
-         * 1. Find all words that have the class "hoverable-word"
-         * 2. Add event listeners to detect mouse hover
-         * 3. When mouse enters a word, show emoji and change it
-         * 4. When mouse leaves a word, hide emoji
-         */
-
-        // STEP 1: Get references to emoji display AND theme toggle
-        // This is like telling JavaScript "hey, I want to control these elements"
+        /* EMOJI HOVER SYSTEM */
         const emojiDisplay = document.getElementById('emojiDisplay');
         const themeToggleButton = document.getElementById('themeToggle');
-
-        // STEP 2: Find all hoverable words in the document
-        // querySelectorAll finds ALL elements that match the class name
         const hoverableWords = document.querySelectorAll('.hoverable-word');
 
-        // STEP 3: Add event listeners to each hoverable word
-        // forEach loops through each word and sets up hover detection
         hoverableWords.forEach(word => {
-            
-            // MOUSEENTER EVENT - Triggers when mouse moves over the word
             word.addEventListener('mouseenter', function() {
-                // Get the emoji associated with this word from data-emoji attribute
                 const emoji = this.getAttribute('data-emoji');
-                
-                // Change the emoji display to show this emoji
                 emojiDisplay.textContent = emoji;
-                
-                // Make the emoji visible by adding the 'visible' class
-                // This triggers the opacity transition from 0 to 1
                 emojiDisplay.classList.add('visible');
-                
-                // HIDE THE TOGGLE - When emoji appears, toggle fades to 0%
                 themeToggleButton.classList.add('hidden');
-                
-                // START PULSING - Add pulse animation when hovering
                 this.classList.add('pulsing');
             });
 
-            // MOUSELEAVE EVENT - Triggers when mouse moves away from the word
             word.addEventListener('mouseleave', function() {
-                // Hide the emoji by removing the 'visible' class
-                // This triggers the opacity transition from 1 to 0
                 emojiDisplay.classList.remove('visible');
-                
-                // SHOW THE TOGGLE - When emoji disappears, toggle fades back to 100%
                 themeToggleButton.classList.remove('hidden');
-                
-                // STOP PULSING - Remove pulse animation when mouse leaves
                 this.classList.remove('pulsing');
             });
         });
 
-        /**
-         * EDUCATIONAL NOTE:
-         * -----------------
-         * data-emoji="🏙️" is called a "data attribute"
-         * It lets us store custom information right in the HTML
-         * We can then read this information with JavaScript
-         * 
-         * For example:
-         * <span data-emoji="🏙️">Tel Aviv</span>
-         * When you hover, JavaScript reads data-emoji and shows 🏙️
-         */
-
-        /* ========================================
-           DARK MODE TOGGLE SYSTEM
-           ======================================== */
-        /**
-         * DARK MODE TOGGLE SWITCH
-         * ----------------------
-         * This code makes the toggle switch slide between light and dark mode
-         * and remembers your choice even after you close the browser!
-         * 
-         * HOW IT WORKS:
-         * 1. Check if user has a saved preference (from previous visit)
-         * 2. Apply dark mode if preference is saved as "dark"
-         * 3. When toggle is clicked, switch modes and save preference
-         * 4. Update the toggle icon image (light_mode.png or dark_mode.png)
-         * 5. CSS automatically slides the knob using the transform property
-         */
-
-        // STEP 1: Get references (we already have themeToggleButton from above)
-        const toggleIcon = document.getElementById('toggleIcon'); // The image inside the knob
+        /* DARK MODE TOGGLE SYSTEM */
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleTooltip = document.getElementById('toggleTooltip');
         const body = document.body;
-        // Get reference to the profile photo image element
         const profilePhoto = document.querySelector('.photo img');
-        // Get reference to the photo container for loading animation
         const photoContainer = document.getElementById('photoContainer');
+        const skeletonLoader = document.getElementById('skeletonLoader');
+        const letterContent = document.getElementById('letterContent');
 
-        // STEP 2: Check if user has a saved preference
-        // localStorage is like a mini database in the browser that saves data
         const savedTheme = localStorage.getItem('theme');
 
-        // STEP 3: Apply saved preference on page load
         if (savedTheme === 'dark') {
-            // If saved preference is dark, apply dark mode immediately
             body.classList.add('dark-mode');
-            toggleIcon.src = 'toggle/dark_mode.png'; // Dark mode icon in knob
-            // CHANGE PHOTO - Switch to funny face in dark mode
+            toggleIcon.src = 'toggle/dark_mode.png';
+            toggleTooltip.textContent = 'Back to work mode';
             profilePhoto.src = 'Files/funny_face2.png';
         } else {
-            // If no preference or light mode, use light mode (default)
             body.classList.remove('dark-mode');
-            toggleIcon.src = 'toggle/light_mode.png'; // Light mode icon in knob
-            // CHANGE PHOTO - Use normal photo in light mode
+            toggleIcon.src = 'toggle/light_mode.png';
+            toggleTooltip.textContent = 'Switch to see me beyond work';
             profilePhoto.src = 'Files/mary-daniel.png';
         }
 
-        // STEP 4: Add click event listener to the toggle button
-        // We use themeToggleButton that was already declared above
         themeToggleButton.addEventListener('click', function() {
-            // Check if dark mode is currently active
             const isDarkMode = body.classList.contains('dark-mode');
             
-            // LOADING ANIMATION - Add loading class to trigger blur and line animation
             photoContainer.classList.add('loading');
+            skeletonLoader.classList.add('active');
+            letterContent.classList.add('loading');
             
             if (isDarkMode) {
-                // SWITCH TO LIGHT MODE
-                body.classList.remove('dark-mode'); // Remove dark mode class
-                toggleIcon.src = 'toggle/light_mode.png'; // Change to light mode icon
-                localStorage.setItem('theme', 'light'); // Save preference
-                // CHANGE PHOTO - Back to normal photo
+                body.classList.remove('dark-mode');
+                toggleIcon.src = 'toggle/light_mode.png';
+                toggleTooltip.textContent = 'Switch to see me beyond work';
+                localStorage.setItem('theme', 'light');
                 profilePhoto.src = 'Files/mary-daniel.png';
             } else {
-                // SWITCH TO DARK MODE
-                body.classList.add('dark-mode'); // Add dark mode class
-                toggleIcon.src = 'toggle/dark_mode.png'; // Change to dark mode icon
-                localStorage.setItem('theme', 'dark'); // Save preference
-                // CHANGE PHOTO - Switch to funny face!
+                body.classList.add('dark-mode');
+                toggleIcon.src = 'toggle/dark_mode.png';
+                toggleTooltip.textContent = 'Back to work mode';
+                localStorage.setItem('theme', 'dark');
                 profilePhoto.src = 'Files/funny_face2.png';
             }
             
-            // LOADING ANIMATION - Remove loading class after animation completes
-            // setTimeout waits 1200ms (1.2 seconds) before removing the loading state
-            // This matches the animation duration defined in CSS (1.2s)
             setTimeout(function() {
                 photoContainer.classList.remove('loading');
-            }, 1200);
+                skeletonLoader.classList.remove('active');
+                letterContent.classList.remove('loading');
+            }, 1500);
         });
-
-        /**
-         * EDUCATIONAL NOTE:
-         * -----------------
-         * HOW THE SLIDING ANIMATION WORKS:
-         * 
-         * 1. When we add the 'dark-mode' class to body, CSS automatically applies:
-         *    body.dark-mode .toggle-knob { transform: translateX(22px); }
-         * 
-         * 2. The transform property moves the knob 22 pixels to the right
-         * 
-         * 3. The transition property makes this movement smooth (0.3 seconds)
-         * 
-         * 4. We change the image source (light_mode.png ↔ dark_mode.png) to match
-         * 
-         * localStorage.setItem('theme', 'dark') saves data in the browser
-         * localStorage.getItem('theme') retrieves the saved data
-         * This data persists even after closing the browser!
-         */
     </script>
 </body>
 </html>
