@@ -6,6 +6,7 @@ on:
       - main
       - simply
       - monday
+      - venn
       - "*"
 
 jobs:
