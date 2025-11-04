@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Daniel - Cover Letter</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           CSS VARIABLES - Color System
+           ======================================== */
+        :root {
+            --bg-color: #F9F3EF;
+            --text-color: #2B1F38;
+            --text-muted: rgba(43, 31, 56, 0.5);
+            --photo-bg: #e0e0e0;
+            --accent-red: #E74C58;
+            --toggle-bg: rgba(43, 31, 56, 0.1);
+            --toggle-icon: #2B1F38;
+        }
+
+        body.dark-mode {
+            --bg-color: #18141D;
+            --text-color: #F0E9F5;
+            --text-muted: #B8ACC4;
+            --photo-bg: #2d2438;
+            --accent-red: #A78BFA;
+            --toggle-bg: rgba(249, 243, 239, 0.1);
+            --toggle-icon: #F0E9F5;
+        }
+
+        /* BODY */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            padding: 32px;
+            font-size: 12px;
+            line-height: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 595px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 858px;
+        }
+
+        /* HEADER SECTION */
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            width: 172px;
+        }
+
+        /* PHOTO */
+        .photo {
+            width: 172px;
+            height: 172px;
+            background-color: var(--photo-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+
+        /* ========================================
+           LOADING ANIMATION - Photo Switch Effect
+           ======================================== */
+        
+        .photo.loading img {
+            filter: blur(2px) brightness(0.8);
+        }
+
+        .scan-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                transparent 46%,
+                rgba(255, 255, 255, 0.1) 47%,
+                rgba(255, 255, 255, 0.6) 49%,
+                #FFFFFF 50%,
+                rgba(255, 255, 255, 0.6) 51%,
+                rgba(255, 255, 255, 0.1) 53%,
+                transparent 54%
+            );
+            filter: blur(0.5px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .photo.loading .scan-overlay {
+            animation: scanDown 1.2s ease-in-out;
+        }
+
+        @keyframes scanDown {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        /* CONTACT INFO */
+        .contact-info {
+            font-size: 10px;
+            line-height: normal;
+            color: var(--text-color);
+        }
+
+        .contact-info a {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+
+        .contact-info a:hover {
+            opacity: 0.7;
+        }
+
+        /* DATE */
+        .date {
+            font-size: 12px;
+            margin-bottom: 47px;
+            color: var(--text-color);
+        }
+
+        /* LETTER CONTENT */
+        .letter-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 350px;
+            min-height: 350px;
+        }
+
+        /* GREETING */
+        .greeting {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        /* PARAGRAPHS */
+        .letter-content p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 20px;
+        }
+
+        /* SIGNATURE SECTION */
+        .signature-section {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 3px;
+        }
+
+        /* CLOSING TEXT */
+        .closing {
+            font-size: 12px;
+            text-align: right;
+            line-height: normal;
+        }
+
+        /* JOB TITLE */
+        .job-title {
+            font-size: 12px;
+            text-align: right;
+        }
+
+        /* SIGNATURE IMAGE */
+        .signature-image {
+            width: 48.954px;
+            height: 59.725px;
+            margin-top: 5px;
+        }
+
+        /* HOVER EFFECT */
+        .highlight-skills {
+            transition: color 0.3s ease;
+        }
+
+        .highlight-skills:hover {
+            color: var(--accent-red);
+        }
+
+        /* ========================================
+           EMOJI DISPLAY BOX
+           ======================================== */
+        
+        .emoji-display {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 34px;
+            line-height: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .emoji-display.visible {
+            opacity: 1;
+        }
+
+        /* ========================================
+           HOVER PULSE ANIMATION
+           ======================================== */
+        
+        @keyframes hoverPulse {
+            0% {
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6);
+            }
+            50% {
+                transform: translateY(-2px);
+                text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+            }
+            100% {
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(255, 0, 0, 0.6);
+            }
+        }
+        
+        @keyframes hoverPulsePurple {
+            0% {
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6);
+            }
+            50% {
+                transform: translateY(-2px);
+                text-shadow: 0 0 8px rgba(167, 139, 250, 0.4);
+            }
+            100% {
+                transform: translateY(0);
+                text-shadow: 0 0 0 rgba(167, 139, 250, 0.6);
+            }
+        }
+        
+        .hoverable-word {
+            color: var(--accent-red);
+            transition: transform 0.2s;
+        }
+        
+        .hoverable-word.pulsing {
+            animation: hoverPulse 1.6s ease-in-out infinite;
+        }
+        
+        body.dark-mode .hoverable-word.pulsing {
+            animation: hoverPulsePurple 1.6s ease-in-out infinite;
+        }
+
+        .hoverable-word:hover {
+            color: var(--accent-red);
+        }
+
+        /* ========================================
+           DARK MODE TOGGLE SWITCH
+           ======================================== */
+        
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1001;
+            width: 44px;
+            height: 24px;
+            background-color: #002846;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+            user-select: none;
+            opacity: 1;
+        }
+
+        .theme-toggle.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #72C3EC;
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .toggle-knob img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        body.dark-mode .toggle-knob {
+            transform: translateX(22px);
+        }
+
+        .theme-toggle:hover .toggle-knob {
+            transform: scale(1.05);
+        }
+
+        body.dark-mode .theme-toggle:hover .toggle-knob {
+            transform: translateX(22px) scale(1.05);
+        }
+
+        /* ========================================
+           TOOLTIP
+           ======================================== */
+        
+        .toggle-tooltip {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: calc(100% + 10px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
+        }
+        
+        .toggle-tooltip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -4px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid rgba(0, 0, 0, 0.8);
+        }
+        
+        .theme-toggle:hover .toggle-tooltip {
+            opacity: 1;
+        }
+
+        body.dark-mode .toggle-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2B1F38;
+        }
+
+        body.dark-mode .toggle-tooltip::before {
+            border-left: 4px solid rgba(255, 255, 255, 0.95);
+        }
+
+        /* ========================================
+           CONTENT SWITCHER
+           ======================================== */
+        
+        .light-mode-only {
+            display: block;
+        }
+        
+        body.dark-mode .light-mode-only {
+            display: none;
+        }
+        
+        .dark-mode-only {
+            display: none;
+        }
+        
+        body.dark-mode .dark-mode-only {
+            display: block;
+        }
+
+        /* ========================================
+           SKELETON LOADING
+           ======================================== */
+        
+        .skeleton-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .skeleton-loader.active {
+            display: flex;
+        }
+        
+        .skeleton-paragraph {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .skeleton-line {
+            height: 20px;
+            background: linear-gradient(
+                90deg, 
+                var(--text-muted) 0%,
+                var(--text-color) 50%,
+                var(--text-muted) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 4px;
+            opacity: 0.15;
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-line.full { width: 100%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.medium { width: 85%; }
+        .skeleton-line.short { width: 60%; }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .letter-content.loading > p {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+                font-size: 11px;
+                line-height: 18px;
+            }
+
+            .container {
+                max-width: 100%;
+                min-height: auto;
+            }
+
+            .header {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+
+            .photo {
+                width: 120px;
+                height: 120px;
+            }
+
+            .contact-info {
+                font-size: 9px;
+            }
+
+            .date {
+                font-size: 11px;
+                margin-bottom: 24px;
+            }
+
+            .letter-content {
+                max-width: 100%;
+                height: auto;
+                min-height: auto;
+                gap: 10px;
+            }
+
+            .letter-content p {
+                font-size: 11px;
+                line-height: 18px;
+            }
+
+            .signature-section {
+                margin-top: 24px;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .closing {
+                font-size: 11px;
+                text-align: left;
+            }
+
+            .job-title {
+                font-size: 11px;
+                text-align: left;
+            }
+
+            .signature-image {
+                width: 40px;
+                height: auto;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 22px;
+            }
+
+            .toggle-knob {
+                width: 18px;
+                height: 18px;
+            }
+
+            .toggle-knob img {
+                width: 14px;
+                height: 14px;
+            }
+
+            body.dark-mode .toggle-knob {
+                transform: translateX(20px);
+            }
+
+            body.dark-mode .theme-toggle:hover .toggle-knob {
+                transform: translateX(20px) scale(1.05);
+            }
+
+            .emoji-display {
+                font-size: 28px;
+                top: 2px;
+                right: 2px;
+            }
+
+            .greeting {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="emoji-display" id="emojiDisplay">🏙️</div>
+        
+        <div class="theme-toggle" id="themeToggle">
+            <div class="toggle-knob">
+                <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
+            </div>
+            <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
+        </div>
+        
+        <!-- HEADER -->
+        <div class="header">
+            <div class="photo" id="photoContainer">
+                <img src="Files/mary-daniel.png" alt="Mary Daniel">
+                <div class="scan-overlay"></div>
+            </div>
+            
+            <div class="contact-info">
+                <p>Mary Daniel</p>
+                <p>Tel Aviv, Israel</p>
+                <p><a href="mailto:marydaniel.product@gmail.com">marydaniel.product@gmail.com</a></p>
+                <p><a href="https://w.app/fxbzxn" target="_blank">+972 52-6394238</a></p>
+                <p>
+                    <a href="https://mary-daniel-portfolio.webflow.io/" target="_blank">[Portfolio]</a>
+                    <a href="https://www.linkedin.com/in/mary-daniel-676b161b1/" target="_blank">[LinkedIn]</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="date">Nov 4, 2025</div>
+
+        <!-- LETTER CONTENT -->
+        <div class="letter-content" id="letterContent">
+            <div class="skeleton-loader" id="skeletonLoader">
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line short"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line medium"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line medium"></div>
+                </div>
+                
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line full"></div>
+                    <div class="skeleton-line long"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </div>
+            
+            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Venn team,</span></p>
+
+            <p class="light-mode-only">
+                <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span> with a strong curiosity for <span class="hoverable-word" data-emoji="⚙️">complex systems</span> and a love for turning data and research into simple, usable experiences. Over the past few years, I've helped shape and launch digital products at companies like <span class="hoverable-word" data-emoji="💡">Lightricks</span> and <span class="hoverable-word" data-emoji="🌐">Wix</span>, working across mobile and SaaS environments from early discovery through production.
+            </p>
+            
+            <p class="dark-mode-only">
+                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, <span class="hoverable-word" data-emoji="🎶">playing the flute</span>, or planning my next <span class="hoverable-word" data-emoji="⛰️">hiking trip</span> with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
+            </p>
+
+            <p class="dark-mode-only">
+                I also make a <span class="hoverable-word" data-emoji="🍷">homemade sour cherry liqueur (Vishnya)</span> that I'm very proud of — a small tradition inspired by my amazing grandmother, Lorika. And one day, I'll finally find the time to go <span class="hoverable-word" data-emoji="🏂">snowboarding</span> again and (hopefully!) earn my second star in <span class="hoverable-word" data-emoji="🐠">scuba diving</span> — this time without the ear infection.
+            </p>
+
+            <p class="light-mode-only">
+                At <span class="hoverable-word" data-emoji="💡">Lightricks</span>, I contributed to a new <span class="hoverable-word" data-emoji="🤖">AI-powered tool</span> built from the ground up, using systems like <span class="hoverable-word" data-emoji="🛠️">Figma Make, Bolt, Cursor, and ChatGPT</span> to speed up iteration and build smarter. That work sharpened my interest in how <span class="hoverable-word" data-emoji="🤖">AI</span> can support meaningful design decisions and tighter <span class="hoverable-word" data-emoji="🤝">collaboration</span> across teams.
+            </p>
+
+            <p class="light-mode-only">
+                What excites me about the role at <span class="hoverable-word" data-emoji="🏢">Venn</span> is the chance to design for both <span class="hoverable-word" data-emoji="👥">residents and operators</span>—two very different user types—within a single, connected platform. I enjoy that kind of <span class="hoverable-word" data-emoji="💪">challenge</span>: navigating complexity, staying curious, and collaborating closely with <span class="hoverable-word" data-emoji="🤝">developers, product managers, and analysts</span> to bring structure to ambiguity.
+            </p>
+        </div>
+
+        <!-- SIGNATURE -->
+        <div class="signature-section">
+            <div class="closing">
+                <p><span class="hoverable-word" data-emoji="🙏">Thanks for considering my application</span> — looking forward to the opportunity to connect.</p>
+                <p>Mary Daniel</p>
+            </div>
+            
+            <p class="job-title light-mode-only">Product Designer</p>
+            <p class="job-title dark-mode-only">Human Being</p>
+            
+            <div class="signature-image">
+                <img src="Files/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================
+         JAVASCRIPT
+         ======================================== -->
+    <script>
+        /* EMOJI HOVER SYSTEM */
+        const emojiDisplay = document.getElementById('emojiDisplay');
+        const themeToggleButton = document.getElementById('themeToggle');
+        const hoverableWords = document.querySelectorAll('.hoverable-word');
+
+        hoverableWords.forEach(word => {
+            word.addEventListener('mouseenter', function() {
+                const emoji = this.getAttribute('data-emoji');
+                emojiDisplay.textContent = emoji;
+                emojiDisplay.classList.add('visible');
+                themeToggleButton.classList.add('hidden');
+                this.classList.add('pulsing');
+            });
+
+            word.addEventListener('mouseleave', function() {
+                emojiDisplay.classList.remove('visible');
+                themeToggleButton.classList.remove('hidden');
+                this.classList.remove('pulsing');
+            });
+        });
+
+        /* DARK MODE TOGGLE SYSTEM */
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleTooltip = document.getElementById('toggleTooltip');
+        const body = document.body;
+        const profilePhoto = document.querySelector('.photo img');
+        const photoContainer = document.getElementById('photoContainer');
+        const skeletonLoader = document.getElementById('skeletonLoader');
+        const letterContent = document.getElementById('letterContent');
+
+        const savedTheme = localStorage.getItem('theme');
+
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            toggleIcon.src = 'toggle/dark_mode.png';
+            toggleTooltip.textContent = 'Back to work mode';
+            profilePhoto.src = 'Files/funny_face2.png';
+        } else {
+            body.classList.remove('dark-mode');
+            toggleIcon.src = 'toggle/light_mode.png';
+            toggleTooltip.textContent = 'Switch to see me beyond work';
+            profilePhoto.src = 'Files/mary-daniel.png';
+        }
+
+        themeToggleButton.addEventListener('click', function() {
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            photoContainer.classList.add('loading');
+            skeletonLoader.classList.add('active');
+            letterContent.classList.add('loading');
+            
+            if (isDarkMode) {
+                body.classList.remove('dark-mode');
+                toggleIcon.src = 'toggle/light_mode.png';
+                toggleTooltip.textContent = 'Switch to see me beyond work';
+                localStorage.setItem('theme', 'light');
+                profilePhoto.src = 'Files/mary-daniel.png';
+            } else {
+                body.classList.add('dark-mode');
+                toggleIcon.src = 'toggle/dark_mode.png';
+                toggleTooltip.textContent = 'Back to work mode';
+                localStorage.setItem('theme', 'dark');
+                profilePhoto.src = 'Files/funny_face2.png';
+            }
+            
+            setTimeout(function() {
+                photoContainer.classList.remove('loading');
+                skeletonLoader.classList.remove('active');
+                letterContent.classList.remove('loading');
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
+

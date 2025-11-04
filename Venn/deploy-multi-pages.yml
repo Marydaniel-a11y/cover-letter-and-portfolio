@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages (Multi-Branch)
+
+on:
+  push:
+    branches:
+      - main
+      - simply
+      - monday
+      - "*"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set branch name
+        id: vars
+        run: echo "branch=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+
+      - name: Install Node (optional)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # If you're using a static site generator (like React, Astro, etc.),
+      # replace this block with your build command (e.g. npm install && npm run build)
+      - name: Copy static files
+        run: |
+          mkdir build
+          cp -r * build/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+          destination_dir: ${{ steps.vars.outputs.branch }}
