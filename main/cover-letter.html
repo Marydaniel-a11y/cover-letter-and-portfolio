@@ -193,6 +193,7 @@
         /* LETTER CONTENT - The main body of the letter */
         .letter-content {
             /* Removed max-width to allow full container width (595px) */
+            position: relative; /* IMPORTANT: Allows absolute positioning of skeleton loader inside */
             display: flex;
             flex-direction: column;
             gap: 12px; /* Space between paragraphs */
@@ -427,6 +428,68 @@
         }
 
         /* ========================================
+           TOOLTIP - Shows text when hovering over the toggle
+           ======================================== */
+        
+        /* TOOLTIP STYLING - The text box that appears on hover */
+        .toggle-tooltip {
+            position: absolute; /* Positioned relative to the toggle */
+            top: 50%; /* Center vertically with the toggle */
+            transform: translateY(-50%); /* Adjust to truly center it */
+            right: calc(100% + 10px); /* Position to the LEFT of toggle (100% width + 10px gap) */
+            
+            /* STYLING */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+            color: #FFFFFF; /* White text */
+            font-size: 10px; /* Small text size */
+            padding: 6px 10px; /* Comfortable padding around text */
+            border-radius: 4px; /* Slightly rounded corners */
+            white-space: nowrap; /* Keep text on one line */
+            
+            /* VISIBILITY */
+            opacity: 0; /* Start invisible */
+            pointer-events: none; /* Don't block clicks */
+            
+            /* ANIMATION - Smooth fade in/out */
+            transition: opacity 0.2s ease;
+            
+            /* LAYERING */
+            z-index: 1002; /* Above toggle (which is 1001) */
+        }
+        
+        /* TOOLTIP ARROW - Small triangle pointing RIGHT toward the toggle */
+        .toggle-tooltip::before {
+            content: ''; /* Empty content, just for the visual arrow */
+            position: absolute;
+            top: 50%; /* Center vertically on tooltip */
+            transform: translateY(-50%); /* Adjust to truly center it */
+            right: -4px; /* Position on the RIGHT edge of tooltip (extends outside) */
+            
+            /* TRIANGLE SHAPE - Using borders trick to point RIGHT */
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent; /* Top side of triangle */
+            border-bottom: 4px solid transparent; /* Bottom side of triangle */
+            border-left: 4px solid rgba(0, 0, 0, 0.8); /* Left creates the triangle pointing right */
+        }
+        
+        /* SHOW TOOLTIP - When hovering over the toggle */
+        .theme-toggle:hover .toggle-tooltip {
+            opacity: 1; /* Fade in to fully visible */
+        }
+
+        /* DARK MODE TOOLTIP - White background and dark text in dark mode */
+        body.dark-mode .toggle-tooltip {
+            background-color: rgba(255, 255, 255, 0.95); /* White background with slight transparency */
+            color: #2B1F38; /* Dark text for good contrast */
+        }
+
+        /* DARK MODE TOOLTIP ARROW - White arrow in dark mode */
+        body.dark-mode .toggle-tooltip::before {
+            border-left: 4px solid rgba(255, 255, 255, 0.95); /* White arrow pointing right */
+        }
+
+        /* ========================================
            CONTENT SWITCHER - Show/Hide Based on Mode
            ======================================== */
         
@@ -450,18 +513,194 @@
             display: block; /* Show in dark mode */
         }
 
+        /* ========================================
+           SKELETON LOADING - Text placeholder animation during mode switch
+           ======================================== */
+        
+        /* SKELETON CONTAINER - Wrapper for all skeleton boxes */
+        /* This appears over the letter content during loading */
+        .skeleton-loader {
+            position: absolute; /* Positioned over the letter content */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 12px; /* Same gap as real paragraphs */
+            z-index: 10; /* Above the letter content */
+        }
+        
+        /* SKELETON ACTIVE - Show when loading */
+        .skeleton-loader.active {
+            display: flex; /* Show the skeleton boxes */
+        }
+        
+        /* SKELETON PARAGRAPH - Container for each paragraph skeleton */
+        .skeleton-paragraph {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; /* Space between lines within a paragraph */
+        }
+        
+        /* SKELETON LINE - Individual gray bars representing text lines */
+        .skeleton-line {
+            height: 20px; /* Same as line-height in CSS (comfortable reading height) */
+            background: linear-gradient(
+                90deg, 
+                var(--text-muted) 0%,      /* Start with muted text color */
+                var(--text-color) 50%,      /* Lighter shade in middle (shimmer effect) */
+                var(--text-muted) 100%      /* End with muted color */
+            );
+            background-size: 200% 100%; /* Double width for animation movement */
+            border-radius: 4px; /* Slightly rounded corners for modern look */
+            opacity: 0.15; /* Semi-transparent (15% opacity) */
+            
+            /* SHIMMER ANIMATION - Creates a subtle moving shine effect */
+            animation: shimmer 1.5s ease-in-out infinite; /* Repeats forever, smooth easing */
+        }
+        
+        /* SKELETON LINE VARIATIONS - Different widths for realistic text simulation */
+        /* Lines have different widths to mimic real text paragraph shapes */
+        .skeleton-line.full { width: 100%; }      /* Full width line */
+        .skeleton-line.long { width: 95%; }       /* Almost full */
+        .skeleton-line.medium { width: 85%; }     /* Medium line */
+        .skeleton-line.short { width: 60%; }      /* Short line (last line of paragraph) */
+        
+        /* SHIMMER KEYFRAMES - Moves the gradient from left to right */
+        /* This creates the "loading shimmer" effect you see in modern apps */
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0; /* Start off-screen to the left */
+            }
+            100% {
+                background-position: 200% 0;  /* Move off-screen to the right */
+            }
+        }
+        
+        /* LETTER CONTENT LOADING STATE - Hide ONLY the text paragraphs, not the skeleton */
+        /* We target the paragraph elements specifically so skeleton remains visible */
+        .letter-content.loading > p {
+            opacity: 0; /* COMPLETELY HIDE the text paragraphs (0% opacity) during loading */
+            pointer-events: none; /* Disable interactions during loading */
+            transition: opacity 0.3s ease; /* Smooth fade in/out */
+        }
+
         /* RESPONSIVE - Adjustments for smaller screens */
         @media (max-width: 768px) {
+            /* BODY PADDING - Reduce padding on smaller screens to maximize content space */
             body {
-                padding: 20px; /* Less padding on mobile */
+                padding: 16px; /* Reduced from 32px to 16px for more space */
+                font-size: 11px; /* Slightly smaller base font for mobile readability */
+                line-height: 18px; /* Adjust line height proportionally */
             }
 
+            /* CONTAINER - Allow full width on mobile */
             .container {
                 max-width: 100%; /* Full width on mobile */
+                min-height: auto; /* Remove fixed min-height on mobile */
             }
 
+            /* HEADER - Stack photo and contact info better on mobile */
+            .header {
+                width: 100%; /* Full width instead of fixed 172px */
+                margin-bottom: 16px; /* Slightly less spacing */
+            }
+
+            /* PHOTO - Smaller photo on mobile to save space */
+            .photo {
+                width: 120px; /* Reduced from 172px */
+                height: 120px; /* Keep it square */
+            }
+
+            /* CONTACT INFO - Adjust font size for mobile */
+            .contact-info {
+                font-size: 9px; /* Slightly smaller on mobile */
+            }
+
+            /* DATE - Adjust spacing */
+            .date {
+                font-size: 11px;
+                margin-bottom: 24px; /* Less spacing before letter content */
+            }
+
+            /* LETTER CONTENT - Remove fixed height on mobile for better flow */
             .letter-content {
                 max-width: 100%; /* Full width on mobile */
+                height: auto; /* IMPORTANT: Allow content to flow naturally */
+                min-height: auto; /* Remove minimum height constraint */
+                gap: 10px; /* Slightly tighter paragraph spacing */
+            }
+
+            /* PARAGRAPHS - Adjust font size for mobile */
+            .letter-content p {
+                font-size: 11px; /* Slightly smaller */
+                line-height: 18px; /* Proportional line height */
+            }
+
+            /* SIGNATURE SECTION - This is the KEY fix for overlapping! */
+            .signature-section {
+                margin-top: 24px; /* Consistent spacing */
+                align-items: flex-start; /* Align to LEFT instead of right on mobile */
+                width: 100%; /* Full width */
+            }
+
+            /* CLOSING TEXT - Left-align on mobile */
+            .closing {
+                font-size: 11px;
+                text-align: left; /* Changed from right to left */
+            }
+
+            /* JOB TITLE - Left-align on mobile */
+            .job-title {
+                font-size: 11px;
+                text-align: left; /* Changed from right to left */
+            }
+
+            /* SIGNATURE IMAGE - Slightly smaller on mobile */
+            .signature-image {
+                width: 40px; /* Slightly smaller */
+                height: auto; /* Maintain aspect ratio */
+            }
+
+            /* TOGGLE SWITCH - Make sure it doesn't overlap with content */
+            .theme-toggle {
+                width: 40px; /* Slightly smaller on mobile */
+                height: 22px; /* Proportionally smaller */
+            }
+
+            /* TOGGLE KNOB - Adjust for smaller toggle */
+            .toggle-knob {
+                width: 18px; /* Smaller knob */
+                height: 18px;
+            }
+
+            /* TOGGLE KNOB IMAGE - Smaller icon */
+            .toggle-knob img {
+                width: 14px;
+                height: 14px;
+            }
+
+            /* DARK MODE KNOB POSITION - Adjust slide distance for smaller toggle */
+            body.dark-mode .toggle-knob {
+                transform: translateX(20px); /* Adjusted from 22px */
+            }
+
+            /* DARK MODE HOVER - Adjust for mobile */
+            body.dark-mode .theme-toggle:hover .toggle-knob {
+                transform: translateX(20px) scale(1.05);
+            }
+
+            /* EMOJI DISPLAY - Slightly smaller on mobile */
+            .emoji-display {
+                font-size: 28px; /* Reduced from 34px */
+                top: 2px; /* Slight adjustment to prevent overlap */
+                right: 2px;
+            }
+
+            /* GREETING - Adjust font size */
+            .greeting {
+                font-size: 11px;
             }
         }
     </style>
@@ -480,6 +719,8 @@
                 <!-- The icon image inside the knob (changes between light_mode.png and dark_mode.png) -->
                 <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
             </div>
+            <!-- TOOLTIP - Shows text when hovering (text changes with mode) -->
+            <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
         </div>
         
         <!-- HEADER: Photo and Contact Information -->
@@ -509,12 +750,43 @@
         <div class="date">Nov 2, 2025</div>
 
         <!-- LETTER BODY -->
-        <div class="letter-content">
+        <div class="letter-content" id="letterContent">
+            <!-- SKELETON LOADER - Shows during mode switch -->
+            <!-- This is the animated placeholder that appears while content is changing -->
+            <div class="skeleton-loader" id="skeletonLoader">
+                <!-- PARAGRAPH 1 SKELETON - Greeting -->
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line short"></div> <!-- "Hi Monday.com team," -->
+                </div>
+                
+                <!-- PARAGRAPH 2 SKELETON - Main content paragraph -->
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>   <!-- Line 1 -->
+                    <div class="skeleton-line full"></div>   <!-- Line 2 -->
+                    <div class="skeleton-line full"></div>   <!-- Line 3 -->
+                    <div class="skeleton-line medium"></div> <!-- Line 4 (shorter) -->
+                </div>
+                
+                <!-- PARAGRAPH 3 SKELETON - Second content paragraph -->
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>   <!-- Line 1 -->
+                    <div class="skeleton-line long"></div>   <!-- Line 2 -->
+                    <div class="skeleton-line medium"></div> <!-- Line 3 (shorter) -->
+                </div>
+                
+                <!-- PARAGRAPH 4 SKELETON - Third content paragraph -->
+                <div class="skeleton-paragraph">
+                    <div class="skeleton-line full"></div>   <!-- Line 1 -->
+                    <div class="skeleton-line full"></div>   <!-- Line 2 -->
+                    <div class="skeleton-line long"></div>   <!-- Line 3 -->
+                    <div class="skeleton-line short"></div>  <!-- Line 4 (last line, shorter) -->
+                </div>
+            </div>
+            
             <!-- Greeting -->
             <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Monday.com team,</span></p>
 
             <!-- Paragraph 1 - LIGHT MODE VERSION -->
-            <!-- This version shows in LIGHT MODE and talks about work/professional background -->
             <p class="light-mode-only">
                 <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
                 intersection of AI products — software, hardware, and us humans. Over the past few years, 
@@ -525,7 +797,7 @@
             <!-- Paragraph 1 - DARK MODE VERSION -->
             <!-- This version shows in DARK MODE and talks about hobbies/personal life -->
             <p class="dark-mode-only">
-                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, playing the flute, or planning my next hiking trip with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
+                When I'm not designing, you'll probably find me at Beit Hanna <span class="hoverable-word" data-emoji="🏋️‍♂️">working out</span>, covered in clay at a <span class="hoverable-word" data-emoji="🫖">ceramics class</span>, <span class="hoverable-word" data-emoji="🎶">playing the flute</span>, or planning my next <span class="hoverable-word" data-emoji="⛰️">hiking trip</span> with my smart, funny, and wonderful husband, <span class="hoverable-word" data-emoji="👑">Roi</span>.
             </p>
 
             <!-- Paragraph 2 - DARK MODE ONLY -->
@@ -668,11 +940,15 @@
 
         // STEP 1: Get references (we already have themeToggleButton from above)
         const toggleIcon = document.getElementById('toggleIcon'); // The image inside the knob
+        const toggleTooltip = document.getElementById('toggleTooltip'); // The tooltip text element
         const body = document.body;
         // Get reference to the profile photo image element
         const profilePhoto = document.querySelector('.photo img');
         // Get reference to the photo container for loading animation
         const photoContainer = document.getElementById('photoContainer');
+        // SKELETON LOADING - Get references to skeleton and letter content elements
+        const skeletonLoader = document.getElementById('skeletonLoader');
+        const letterContent = document.getElementById('letterContent');
 
         // STEP 2: Check if user has a saved preference
         // localStorage is like a mini database in the browser that saves data
@@ -683,12 +959,14 @@
             // If saved preference is dark, apply dark mode immediately
             body.classList.add('dark-mode');
             toggleIcon.src = 'toggle/dark_mode.png'; // Dark mode icon in knob
+            toggleTooltip.textContent = 'Back to work mode'; // Update tooltip text for dark mode
             // CHANGE PHOTO - Switch to funny face in dark mode
             profilePhoto.src = 'Files/funny_face2.png';
         } else {
             // If no preference or light mode, use light mode (default)
             body.classList.remove('dark-mode');
             toggleIcon.src = 'toggle/light_mode.png'; // Light mode icon in knob
+            toggleTooltip.textContent = 'Switch to see me beyond work'; // Update tooltip text for light mode
             // CHANGE PHOTO - Use normal photo in light mode
             profilePhoto.src = 'Files/mary-daniel.png';
         }
@@ -702,10 +980,15 @@
             // LOADING ANIMATION - Add loading class to trigger blur and line animation
             photoContainer.classList.add('loading');
             
+            // SKELETON LOADING - Show skeleton boxes and dim the text content
+            skeletonLoader.classList.add('active'); // Shows the gray skeleton boxes
+            letterContent.classList.add('loading'); // Dims the actual text to 30% opacity
+            
             if (isDarkMode) {
                 // SWITCH TO LIGHT MODE
                 body.classList.remove('dark-mode'); // Remove dark mode class
                 toggleIcon.src = 'toggle/light_mode.png'; // Change to light mode icon
+                toggleTooltip.textContent = 'Switch to see me beyond work'; // Update tooltip for light mode
                 localStorage.setItem('theme', 'light'); // Save preference
                 // CHANGE PHOTO - Back to normal photo
                 profilePhoto.src = 'Files/mary-daniel.png';
@@ -713,17 +996,21 @@
                 // SWITCH TO DARK MODE
                 body.classList.add('dark-mode'); // Add dark mode class
                 toggleIcon.src = 'toggle/dark_mode.png'; // Change to dark mode icon
+                toggleTooltip.textContent = 'Back to work mode'; // Update tooltip for dark mode
                 localStorage.setItem('theme', 'dark'); // Save preference
                 // CHANGE PHOTO - Switch to funny face!
                 profilePhoto.src = 'Files/funny_face2.png';
             }
             
             // LOADING ANIMATION - Remove loading class after animation completes
-            // setTimeout waits 1200ms (1.2 seconds) before removing the loading state
-            // This matches the animation duration defined in CSS (1.2s)
+            // setTimeout waits 1500ms (1.5 seconds) before removing the loading state
+            // This gives enough time for the skeleton animation to feel complete
             setTimeout(function() {
-                photoContainer.classList.remove('loading');
-            }, 1200);
+                photoContainer.classList.remove('loading'); // Remove photo blur effect
+                // SKELETON LOADING - Hide skeleton and restore text after loading completes
+                skeletonLoader.classList.remove('active'); // Hide skeleton boxes
+                letterContent.classList.remove('loading'); // Restore text to 100% opacity (smooth fade in)
+            }, 1500); // 1500ms = 1.5 seconds (skeleton loading duration)
         });
 
         /**
