@@ -43,15 +43,430 @@
             --toggle-icon: #F0E9F5;
         }
 
+        /* ========================================
+           SIDEBAR NAVIGATION
+           ======================================== */
+        
+        /* Fixed sidebar container - positioned on the left */
+        .sidebar-nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px; /* Fixed width for sidebar */
+            background-color: rgba(249, 243, 239, 0.6); /* Slightly darker tint for contrast */
+            backdrop-filter: blur(10px); /* Subtle blur effect */
+            border-right: 1px solid rgba(43, 31, 56, 0.15);
+            box-shadow: 4px 0 20px rgba(43, 31, 56, 0.08); /* Soft drop shadow */
+            padding: 80px 24px 32px 24px; /* Top, right, bottom, left - matches cover-letter padding */
+            overflow-y: auto; /* Allow scrolling if content is too long */
+            overflow-x: hidden; /* Hide horizontal overflow when collapsed */
+            z-index: 1000; /* Below theme toggle (1001) */
+            transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.3s ease,
+                        border-color 0.3s ease,
+                        padding 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.3s ease;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column; /* Enable flexbox for footer positioning */
+        }
+
+        body.dark-mode .sidebar-nav {
+            background-color: rgba(24, 20, 29, 0.8); /* Darker tint for dark mode */
+            border-right-color: rgba(249, 243, 239, 0.15);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Collapsed state - sidebar shrinks to minimal width */
+        .sidebar-nav.collapsed {
+            width: 60px; /* Minimal width when collapsed */
+            padding: 80px 8px 32px 8px; /* Top, right, bottom, left - reduced horizontal padding when collapsed */
+        }
+
+        /* Hide navigation text and content when collapsed */
+        .sidebar-nav.collapsed .sidebar-nav-list {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Hide footer when sidebar is collapsed */
+        .sidebar-nav.collapsed .sidebar-footer {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Show navigation content when expanded */
+        .sidebar-nav:not(.collapsed) .sidebar-nav-list {
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.3s ease 0.1s; /* Slight delay for smooth reveal */
+        }
+
+        /* Show footer when sidebar is expanded */
+        .sidebar-nav:not(.collapsed) .sidebar-footer {
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.3s ease 0.1s; /* Slight delay for smooth reveal */
+        }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            position: fixed;
+            left: 12px; /* Aligned with sidebar padding */
+            top: 12px; /* Near top */
+            width: 36px;
+            height: 36px;
+            background-color: var(--bg-color);
+            border: 1px solid rgba(43, 31, 56, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001; /* Above sidebar (1000) */
+            transition: background-color 0.2s ease,
+                        border-color 0.2s ease,
+                        transform 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            user-select: none;
+        }
+
+        /* Hover effect on toggle button */
+        .sidebar-toggle:hover {
+            background-color: rgba(43, 31, 56, 0.05);
+            border-color: rgba(43, 31, 56, 0.15);
+        }
+
+        body.dark-mode .sidebar-toggle {
+            border-color: rgba(249, 243, 239, 0.1);
+        }
+
+        body.dark-mode .sidebar-toggle:hover {
+            background-color: rgba(249, 243, 239, 0.05);
+            border-color: rgba(249, 243, 239, 0.15);
+        }
+
+        /* Toggle icon container */
+        .sidebar-toggle-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Icon bars for hamburger/close icon */
+        .sidebar-toggle-icon-bar {
+            position: absolute;
+            width: 16px;
+            height: 2px;
+            background-color: var(--text-color);
+            border-radius: 1px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0.8;
+        }
+
+        /* Top bar */
+        .sidebar-toggle-icon-bar:nth-child(1) {
+            top: 5px;
+        }
+
+        /* Middle bar */
+        .sidebar-toggle-icon-bar:nth-child(2) {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Bottom bar */
+        .sidebar-toggle-icon-bar:nth-child(3) {
+            bottom: 5px;
+        }
+
+        /* Collapsed state - transform to X icon */
+        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(1) {
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(2) {
+            opacity: 0;
+            transform: translateY(-50%) scale(0);
+        }
+
+        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(3) {
+            bottom: auto;
+            top: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+
+        /* Toggle tooltip */
+        .sidebar-toggle-tooltip {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: calc(100% + 10px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sidebar-toggle-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 100%;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 4px solid rgba(0, 0, 0, 0.8);
+        }
+
+        /* Show tooltip on hover */
+        .sidebar-toggle:hover .sidebar-toggle-tooltip {
+            opacity: 1;
+        }
+
+        body.dark-mode .sidebar-toggle-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2B1F38;
+        }
+
+        body.dark-mode .sidebar-toggle-tooltip::after {
+            border-right-color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Navigation list container */
+        .sidebar-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Increased spacing between top-level items for better grouping */
+            flex: 1; /* Take up available space to push footer down */
+        }
+
+        /* Top-level navigation items */
+        .sidebar-nav-item {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Add spacing between navigation groups */
+        .sidebar-nav-item:not(:last-child) {
+            margin-bottom: 4px;
+        }
+
+        /* Navigation link/button styling */
+        .sidebar-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Increased space between icon and text for better alignment */
+            padding: 10px 12px; /* Increased vertical padding for better touch targets */
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 6px; /* Slightly more rounded for polished look */
+            transition: background-color 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+            font-size: 12px;
+            line-height: 20px;
+            font-weight: 500; /* Slightly bolder for better readability */
+        }
+
+        /* Hover effect on navigation items */
+        .sidebar-nav-link:hover {
+            background-color: rgba(43, 31, 56, 0.05);
+        }
+
+        body.dark-mode .sidebar-nav-link:hover {
+            background-color: rgba(249, 243, 239, 0.05);
+        }
+
+        /* Icon styling - simple text icons */
+        .sidebar-nav-icon {
+            width: 18px; /* Slightly larger for better visibility */
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px; /* Larger icon size */
+            flex-shrink: 0;
+            opacity: 0.95; /* More visible */
+            line-height: 1; /* Ensure proper alignment */
+        }
+
+        /* Expandable arrow icon for items with nested content */
+        .sidebar-nav-arrow {
+            margin-left: auto; /* Push arrow to the right */
+            font-size: 10px;
+            transition: transform 0.3s ease;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        /* Rotate arrow when expanded */
+        .sidebar-nav-item.expanded .sidebar-nav-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Nested list container - hidden by default */
+        .sidebar-nav-sublist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            margin-top: 4px;
+            margin-left: 24px; /* Indentation for nested items */
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 2px; /* Tighter spacing for nested items */
+        }
+
+        /* Expanded state - show nested items */
+        .sidebar-nav-item.expanded .sidebar-nav-sublist {
+            max-height: 500px; /* Large enough to show all nested items */
+            opacity: 1;
+            margin-top: 4px;
+        }
+
+        /* Nested navigation items */
+        .sidebar-nav-sublink {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px; /* Increased padding for better spacing */
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            cursor: pointer;
+            font-size: 11px;
+            line-height: 18px;
+            margin-left: 4px; /* Additional indentation for visual hierarchy */
+        }
+
+        /* Hover effect on nested items */
+        .sidebar-nav-sublink:hover {
+            background-color: rgba(43, 31, 56, 0.05);
+            color: var(--text-color);
+        }
+
+        body.dark-mode .sidebar-nav-sublink:hover {
+            background-color: rgba(249, 243, 239, 0.05);
+        }
+
+        /* Active/selected state for navigation items */
+        .sidebar-nav-link.active,
+        .sidebar-nav-sublink.active {
+            background-color: rgba(43, 31, 56, 0.08);
+            color: var(--text-color);
+            font-weight: 700;
+        }
+
+        body.dark-mode .sidebar-nav-link.active,
+        body.dark-mode .sidebar-nav-sublink.active {
+            background-color: rgba(249, 243, 239, 0.08);
+        }
+
+        /* Coming soon badge styling for nested items */
+        .sidebar-nav-coming-soon {
+            margin-left: auto;
+            font-size: 9px;
+            font-weight: 400;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        /* Disabled state for coming soon items */
+        .sidebar-nav-sublink.coming-soon {
+            cursor: not-allowed;
+            opacity: 0.85; /* Slightly reduced opacity but still readable */
+        }
+
+        .sidebar-nav-sublink.coming-soon:hover {
+            background-color: transparent;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            margin-top: auto; /* Push footer to bottom */
+            padding-top: 32px; /* Increased spacing above footer */
+            padding-bottom: 8px; /* Add bottom padding */
+            border-top: 1px solid rgba(43, 31, 56, 0.2); /* More prominent divider */
+            display: flex;
+            flex-direction: column;
+            gap: 6px; /* Increased gap between footer lines */
+        }
+
+        body.dark-mode .sidebar-footer {
+            border-top-color: rgba(249, 243, 239, 0.2);
+        }
+
+        .sidebar-footer-text {
+            font-size: 10px;
+            color: rgba(43, 31, 56, 0.7); /* Darker gray for better readability */
+            margin: 0;
+            line-height: 1.5; /* Better line height for readability */
+            text-align: left;
+        }
+
+        body.dark-mode .sidebar-footer-text {
+            color: rgba(240, 233, 245, 0.75); /* Lighter for dark mode readability */
+        }
+
+        .sidebar-footer-link {
+            color: rgba(43, 31, 56, 0.7); /* Match footer text color */
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        body.dark-mode .sidebar-footer-link {
+            color: rgba(240, 233, 245, 0.75);
+        }
+
+        .sidebar-footer-link:hover {
+            color: var(--accent-red);
+        }
+
         /* BODY */
         body {
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--bg-color); 
             color: var(--text-color);
-            padding: 32px;
+            padding: 32px 32px 32px 280px; /* Left padding increased to account for sidebar (240px + 40px margin) */
             font-size: 14px;
             line-height: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease,
+                        color 0.3s ease,
+                        padding-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Adjust body padding when sidebar is collapsed */
+        body.sidebar-collapsed {
+            padding-left: 100px; /* Reduced padding when sidebar is collapsed (60px sidebar + 40px margin) */
         }
 
         /* CONTAINER */
@@ -1086,6 +1501,86 @@
     </style>
 </head>
 <body>
+    <!-- SIDEBAR TOGGLE BUTTON -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+        <div class="sidebar-toggle-icon">
+            <span class="sidebar-toggle-icon-bar"></span>
+            <span class="sidebar-toggle-icon-bar"></span>
+            <span class="sidebar-toggle-icon-bar"></span>
+        </div>
+        <div class="sidebar-toggle-tooltip" id="sidebarToggleTooltip">Close sidebar</div>
+    </button>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav class="sidebar-nav" id="sidebarNav">
+        <ul class="sidebar-nav-list">
+            <!-- About Me -->
+            <li class="sidebar-nav-item">
+                <a href="cover-letter.html" class="sidebar-nav-link">
+                    <span class="sidebar-nav-icon">👤</span>
+                    <span>About Me</span>
+                </a>
+            </li>
+            
+            <!-- Case Studies - Expandable -->
+            <li class="sidebar-nav-item" id="caseStudiesItem">
+                <div class="sidebar-nav-link" id="caseStudiesLink">
+                    <span class="sidebar-nav-icon">📁</span>
+                    <span>Case Studies</span>
+                    <span class="sidebar-nav-arrow">▶</span>
+                </div>
+                <ul class="sidebar-nav-sublist" id="caseStudiesSublist">
+                    <li>
+                        <a href="case-study.html" class="sidebar-nav-sublink">
+                            <span>Onboarding @ Lightricks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="sidebar-nav-sublink coming-soon">
+                            <span>AI UGC @ Lightricks</span>
+                            <span class="sidebar-nav-coming-soon">COMING SOON</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="sidebar-nav-sublink coming-soon">
+                            <span>Premium Page @ Wix</span>
+                            <span class="sidebar-nav-coming-soon">COMING SOON</span>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            
+            <!-- Figma Handoff - Expandable -->
+            <li class="sidebar-nav-item" id="figmaHandoffItem">
+                <div class="sidebar-nav-link" id="figmaHandoffLink">
+                    <span class="sidebar-nav-icon">🎨</span>
+                    <span>Figma Handoff</span>
+                    <span class="sidebar-nav-arrow">▶</span>
+                </div>
+                <ul class="sidebar-nav-sublist" id="figmaHandoffSublist">
+                    <li>
+                        <a href="https://www.figma.com/design/hzHDAfFbCRU91LHP0fXyTQ/Onboarding-1.0?node-id=0-1&t=ttpgXWxuSdzzZee0-1" target="_blank" rel="noopener noreferrer" class="sidebar-nav-sublink">
+                            <span>Onboarding @ Lightricks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.figma.com/design/nCwYPlDy3jXKKVK8pBIydk/AI-Avatar-UGC-Ad-Feature?node-id=0-1&t=Ja2UsLdIICtkugok-1" target="_blank" rel="noopener noreferrer" class="sidebar-nav-sublink">
+                            <span>AI UGC @ Lightricks</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <p class="sidebar-footer-text">
+                © Mary Daniel · Designed & coded in <a href="https://cursor.sh" target="_blank" class="sidebar-footer-link">Cursor</a>
+            </p>
+            <p class="sidebar-footer-text">All rights reserved.</p>
+        </div>
+    </nav>
+
     <div class="container">
         
         <!-- DARK MODE TOGGLE -->
@@ -1730,6 +2225,148 @@
                 e.stopPropagation(); // Stop the click from reaching the overlay
             });
         }
+        /* ========================================
+           SIDEBAR NAVIGATION SYSTEM
+           ======================================== */
+        
+        // Get sidebar navigation elements
+        const sidebarNav = document.getElementById('sidebarNav');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarToggleTooltip = document.getElementById('sidebarToggleTooltip');
+        const caseStudiesItem = document.getElementById('caseStudiesItem');
+        const caseStudiesLink = document.getElementById('caseStudiesLink');
+        const caseStudiesSublist = document.getElementById('caseStudiesSublist');
+        const figmaHandoffItem = document.getElementById('figmaHandoffItem');
+        const figmaHandoffLink = document.getElementById('figmaHandoffLink');
+        const figmaHandoffSublist = document.getElementById('figmaHandoffSublist');
+        
+        // Check for saved sidebar state in localStorage
+        const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+        const isCollapsed = savedSidebarState === 'true';
+        
+        // Set initial state
+        if (isCollapsed) {
+            sidebarNav.classList.add('collapsed');
+            document.body.classList.add('sidebar-collapsed');
+            if (sidebarToggleTooltip) {
+                sidebarToggleTooltip.textContent = 'Open sidebar';
+            }
+        } else {
+            sidebarNav.classList.remove('collapsed');
+            document.body.classList.remove('sidebar-collapsed');
+            if (sidebarToggleTooltip) {
+                sidebarToggleTooltip.textContent = 'Close sidebar';
+            }
+        }
+        
+        // Toggle sidebar when button is clicked
+        if (sidebarToggle && sidebarNav) {
+            sidebarToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle collapsed state
+                const currentlyCollapsed = sidebarNav.classList.contains('collapsed');
+                
+                if (currentlyCollapsed) {
+                    // Expand sidebar
+                    sidebarNav.classList.remove('collapsed');
+                    document.body.classList.remove('sidebar-collapsed');
+                    if (sidebarToggleTooltip) {
+                        sidebarToggleTooltip.textContent = 'Close sidebar';
+                    }
+                    localStorage.setItem('sidebarCollapsed', 'false');
+                } else {
+                    // Collapse sidebar
+                    sidebarNav.classList.add('collapsed');
+                    document.body.classList.add('sidebar-collapsed');
+                    if (sidebarToggleTooltip) {
+                        sidebarToggleTooltip.textContent = 'Open sidebar';
+                    }
+                    localStorage.setItem('sidebarCollapsed', 'true');
+                }
+            });
+        }
+        
+        // Set active state based on current page
+        const currentPage = window.location.pathname.split('/').pop() || 'case-study.html';
+        
+        // Find and mark active navigation items
+        const allNavLinks = document.querySelectorAll('.sidebar-nav-link, .sidebar-nav-sublink');
+        allNavLinks.forEach(link => {
+            if (link.href) {
+                const linkPage = link.href.split('/').pop();
+                if (linkPage === currentPage || (currentPage === '' && linkPage === 'cover-letter.html')) {
+                    link.classList.add('active');
+                    
+                    // If it's a nested item, expand the parent
+                    const parentItem = link.closest('.sidebar-nav-item');
+                    if (parentItem === caseStudiesItem) {
+                        // This is a nested item under Case Studies, expand it
+                        caseStudiesItem.classList.add('expanded');
+                    } else if (parentItem === figmaHandoffItem) {
+                        // This is a nested item under Figma Handoff, expand it
+                        figmaHandoffItem.classList.add('expanded');
+                    }
+                }
+            }
+        });
+        
+        // Special case: if we're on case-study.html, expand Case Studies and mark it active
+        if (currentPage === 'case-study.html') {
+            caseStudiesItem.classList.add('expanded');
+            const caseStudyLink = document.querySelector('.sidebar-nav-sublist#caseStudiesSublist .sidebar-nav-sublink[href="case-study.html"]');
+            if (caseStudyLink) {
+                caseStudyLink.classList.add('active');
+            }
+        }
+        
+        // Toggle expand/collapse when clicking on "Case Studies"
+        if (caseStudiesLink && caseStudiesItem) {
+            caseStudiesLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle the 'expanded' class on the parent item
+                const isExpanded = caseStudiesItem.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Collapse the sublist
+                    caseStudiesItem.classList.remove('expanded');
+                } else {
+                    // Expand the sublist
+                    caseStudiesItem.classList.add('expanded');
+                }
+            });
+        }
+        
+        // Toggle expand/collapse when clicking on "Figma Handoff"
+        if (figmaHandoffLink && figmaHandoffItem) {
+            figmaHandoffLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Toggle the 'expanded' class on the parent item
+                const isExpanded = figmaHandoffItem.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Collapse the sublist
+                    figmaHandoffItem.classList.remove('expanded');
+                } else {
+                    // Expand the sublist
+                    figmaHandoffItem.classList.add('expanded');
+                }
+            });
+        }
+        
+        // Prevent clicks on "coming soon" items from doing anything
+        const comingSoonItems = document.querySelectorAll('.sidebar-nav-sublink.coming-soon');
+        comingSoonItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
     </script>
 </body>
 </html>
