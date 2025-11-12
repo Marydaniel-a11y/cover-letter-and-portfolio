@@ -191,22 +191,7 @@
             bottom: 5px;
         }
 
-        /* Collapsed state - transform to X icon */
-        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(1) {
-            top: 50%;
-            transform: translateY(-50%) rotate(45deg);
-        }
-
-        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(2) {
-            opacity: 0;
-            transform: translateY(-50%) scale(0);
-        }
-
-        body.sidebar-collapsed .sidebar-toggle-icon-bar:nth-child(3) {
-            bottom: auto;
-            top: 50%;
-            transform: translateY(-50%) rotate(-45deg);
-        }
+        /* Keep hamburger icon in both states - no transformation to X */
 
         /* Toggle tooltip */
         .sidebar-toggle-tooltip {
@@ -467,6 +452,8 @@
             padding: 60px 32px 32px 280px; /* Left padding increased to account for sidebar (240px + 40px margin) */
             font-size: 12px;
             line-height: 20px;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
             transition: background-color 0.3s ease,
                         color 0.3s ease,
                         padding-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -479,10 +466,13 @@
 
         /* CONTAINER */
         .container {
-            max-width: 595px;
+            max-width: 650px;
             margin: 0 auto;
             position: relative;
-            min-height: 858px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         /* HEADER SECTION */
@@ -507,7 +497,7 @@
             color: #666;
             text-align: center;
             overflow: visible;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
             position: relative;
             cursor: pointer;
         }
@@ -536,6 +526,36 @@
         .photo:hover .photo-background-box {
             opacity: 1;
             transform: translate(4px, 4px) rotate(4deg);
+        }
+        
+        /* Animation when tooltip auto-shows - photo rotates and background box appears */
+        .photo.auto-animate {
+            animation: photoAttention 0.6s ease-in-out forwards;
+        }
+        
+        .photo.auto-animate .photo-background-box {
+            opacity: 1;
+            transform: translate(4px, 4px) rotate(4deg);
+            transition: opacity 0.3s ease, transform 0.6s ease-in-out;
+        }
+        
+        /* Subtle attention-grabbing animation - rotates photo to draw attention */
+        @keyframes photoAttention {
+            0% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-6deg);
+            }
+            50% {
+                transform: rotate(-3deg);
+            }
+            75% {
+                transform: rotate(-5deg);
+            }
+            100% {
+                transform: rotate(-4deg);
+            }
         }
 
         /* Dark mode: change background box color */
@@ -597,6 +617,11 @@
             .header:hover .photo-tooltip {
                 opacity: 1;
             }
+            
+            /* Auto-show tooltip class - for programmatic display */
+            .photo-tooltip.auto-show {
+                opacity: 1;
+            }
         }
 
         body.dark-mode .photo-tooltip {
@@ -637,9 +662,11 @@
             opacity: 0;
             visibility: hidden; /* Completely hide when not animating */
             pointer-events: none; /* Prevent interaction during animation */
+            display: none; /* Hidden by default - only shown during loading animation */
         }
 
         .photo.loading .scan-overlay {
+            display: block; /* Show during animation */
             visibility: visible; /* Show during animation */
             animation: scanDown 1.2s ease-in-out;
             animation-fill-mode: none; /* Don't keep final state */
@@ -647,6 +674,7 @@
 
         /* Ensure scan-overlay resets properly after animation */
         .photo:not(.loading) .scan-overlay {
+            display: none !important; /* Completely hide */
             transform: translateY(-100%) !important;
             opacity: 0 !important;
             visibility: hidden !important; /* Completely hide */
@@ -685,6 +713,11 @@
             text-decoration: underline;
             transition: color 0.2s ease;
         }
+        
+        /* Add spacing between multiple links in the same paragraph */
+        .contact-info p a:not(:last-child) {
+            margin-right: 8px;
+        }
 
         .contact-info a:hover {
             color: var(--accent-red); /* Red primary color on hover */
@@ -705,7 +738,7 @@
         /* DATE */
         .date {
             font-size: 12px;
-            margin-bottom: 47px;
+            margin-bottom: 36px;
             color: var(--text-color);
         }
 
@@ -715,8 +748,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            height: 350px;
-            min-height: 350px;
+            flex: 1;
+            overflow-y: auto; /* Allow scrolling within content if needed */
         }
 
         /* GREETING */
@@ -921,16 +954,6 @@
             top: 2px;
             left: 2px;
             transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .toggle-knob img {
-            width: 16px;
-            height: 16px;
-            object-fit: contain;
         }
 
         body.dark-mode .toggle-knob {
@@ -1034,7 +1057,7 @@
             /* Panel styling */
             width: auto;
             min-width: 280px;
-            max-width: 595px; /* Match page content width */
+            max-width: 650px; /* Match page content width */
             background-color: var(--bg-color);
             border: 1px solid rgba(43, 31, 56, 0.1);
             border-left: none;
@@ -1140,7 +1163,7 @@
         /* Sticky top teaser - always visible */
         .cta-teaser {
             width: 100%;
-            max-width: 595px; /* Match container width */
+            max-width: 650px; /* Match container width */
             background-color: var(--bg-color);
             border: 1px solid rgba(43, 31, 56, 0.1);
             border-radius: 0 0 12px 12px; /* Round bottom corners */
@@ -1227,11 +1250,11 @@
         /* Medium screens: Adjust panel to prevent overflow */
         @media (max-width: 1024px) and (min-width: 769px) {
             .cta-expandable-panel {
-                max-width: min(595px, calc(100vw - 50% - 300px)); /* Match content width but prevent overflow */
+                max-width: min(650px, calc(100vw - 50% - 300px)); /* Match content width but prevent overflow */
             }
             
             .cta-expandable-panel.expanded {
-                max-width: min(595px, calc(100vw - 50% - 300px));
+                max-width: min(650px, calc(100vw - 50% - 300px));
             }
         }
 
@@ -1621,11 +1644,6 @@
                 height: 18px;
             }
 
-            .toggle-knob img {
-                width: 14px;
-                height: 14px;
-            }
-
             body.dark-mode .toggle-knob {
                 transform: translateX(20px);
             }
@@ -1819,9 +1837,7 @@
         <div class="emoji-display" id="emojiDisplay">🏙️</div>
         
         <div class="theme-toggle" id="themeToggle">
-            <div class="toggle-knob">
-                <img id="toggleIcon" src="assets_toggle/light_mode.png" alt="Mode icon">
-            </div>
+            <div class="toggle-knob"></div>
             <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
         </div>
         
@@ -1840,7 +1856,8 @@
                 <p><a href="mailto:marydaniel.product@gmail.com">marydaniel.product@gmail.com</a></p>
                 <p><span class="contact-info-copy" id="phoneCopy" data-copy-text="+972 52-6394238">+972 52-6394238</span></p>
                 <p>
-                    <a href="https://www.linkedin.com/in/mary-daniel-676b161b1/" target="_blank">[LinkedIn]</a>
+                    <a href="https://www.linkedin.com/in/mary-daniel-676b161b1/" target="_blank" rel="noopener noreferrer">[LinkedIn]</a>
+                    <a href="CV/Mary Daniel-CV.pdf" target="_blank" rel="noopener noreferrer">[Resume]</a>
                 </p>
             </div>
         </div>
@@ -1875,7 +1892,7 @@
                 </div>
             </div>
             
-            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Reader.</span></p>
+            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Reader,</span></p>
 
             <p class="light-mode-only">
                 <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
@@ -1989,7 +2006,6 @@
         });
 
         /* DARK MODE TOGGLE SYSTEM */
-        const toggleIcon = document.getElementById('toggleIcon');
         const toggleTooltip = document.getElementById('toggleTooltip');
         const photoTooltip = document.getElementById('photoTooltip');
         const body = document.body;
@@ -2001,22 +2017,43 @@
 
         const savedTheme = localStorage.getItem('theme');
 
+        // Function to reset scan-overlay
+        function resetScanOverlay() {
+            if (scanOverlay) {
+                scanOverlay.style.transform = 'translateY(-100%)';
+                scanOverlay.style.opacity = '0';
+                scanOverlay.style.visibility = 'hidden';
+                scanOverlay.style.animation = 'none';
+                scanOverlay.style.display = 'none'; // Additional safeguard
+                // Force a reflow to ensure styles are applied
+                void scanOverlay.offsetHeight;
+            }
+        }
+
+        // Reset scan-overlay immediately on page load
+        resetScanOverlay();
+        
+        // Also reset after a short delay to catch any timing issues
+        setTimeout(resetScanOverlay, 100);
+
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
-            toggleIcon.src = 'assets_toggle/dark_mode.png';
             toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
             if (photoTooltip) {
                 photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
             }
             profilePhoto.src = 'assets_personal/funny_face2.png';
+            // Ensure scan-overlay is hidden when loading with dark mode
+            resetScanOverlay();
         } else {
             body.classList.remove('dark-mode');
-            toggleIcon.src = 'assets_toggle/light_mode.png';
             toggleTooltip.textContent = 'Switch to see me beyond work';
             if (photoTooltip) {
                 photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
             }
             profilePhoto.src = 'assets_personal/mary-daniel.png';
+            // Ensure scan-overlay is hidden when loading with light mode
+            resetScanOverlay();
         }
 
         themeToggleButton.addEventListener('click', function() {
@@ -2028,7 +2065,6 @@
             
             if (isDarkMode) {
                 body.classList.remove('dark-mode');
-                toggleIcon.src = 'assets_toggle/light_mode.png';
                 toggleTooltip.textContent = 'Switch to see me beyond work';
                 if (photoTooltip) {
                     photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
@@ -2037,7 +2073,6 @@
                 profilePhoto.src = 'assets_personal/mary-daniel.png';
             } else {
                 body.classList.add('dark-mode');
-                toggleIcon.src = 'assets_toggle/dark_mode.png';
                 toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
                 if (photoTooltip) {
                     photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
@@ -2052,14 +2087,96 @@
                 letterContent.classList.remove('loading');
                 
                 // Explicitly reset scan-overlay to ensure it's hidden
-                if (scanOverlay) {
-                    scanOverlay.style.transform = 'translateY(-100%)';
-                    scanOverlay.style.opacity = '0';
-                    scanOverlay.style.visibility = 'hidden';
-                    scanOverlay.style.animation = 'none';
-                }
+                resetScanOverlay();
             }, 1500);
         });
+
+        /* ========================================
+           AUTO-SHOW PHOTO TOOLTIP AFTER 7 SECONDS
+           (Only if user hasn't navigated away - shows once per browser session)
+           ======================================== */
+        
+        // Track if user has navigated to another page
+        let hasNavigated = false;
+        
+        // Check if tooltip has already been shown (using sessionStorage - resets when browser closes)
+        // This ensures it shows once per browser session
+        const tooltipShownKey = 'photoTooltipAutoShown';
+        const tooltipAlreadyShown = sessionStorage.getItem(tooltipShownKey) === 'true';
+        
+        // Function to show the photo tooltip automatically
+        function showPhotoTooltipAuto() {
+            // Debug logging to help troubleshoot
+            console.log('showPhotoTooltipAuto called', {
+                hasNavigated: hasNavigated,
+                tooltipAlreadyShown: tooltipAlreadyShown,
+                photoTooltipExists: !!photoTooltip,
+                windowWidth: window.innerWidth,
+                isDesktop: window.innerWidth >= 769
+            });
+            
+            // Only show if:
+            // 1. User hasn't navigated away
+            // 2. Tooltip hasn't been shown before (in this session)
+            // 3. Photo tooltip element exists
+            // 4. We're on desktop (tooltip is only visible on desktop)
+            if (!hasNavigated && !tooltipAlreadyShown && photoTooltip && window.innerWidth >= 769) {
+                // Get the photo container element
+                const photoElement = document.getElementById('photoContainer');
+                
+                // Add animation class to photo to create movement
+                if (photoElement) {
+                    photoElement.classList.add('auto-animate');
+                }
+                
+                // Add the auto-show class to make tooltip visible
+                photoTooltip.classList.add('auto-show');
+                
+                // Mark as shown in sessionStorage so it only happens once per browser session
+                sessionStorage.setItem(tooltipShownKey, 'true');
+                
+                console.log('Tooltip shown successfully!');
+                
+                // Remove animation class after animation completes (0.6s)
+                setTimeout(function() {
+                    if (photoElement) {
+                        // Keep the rotated state but remove animation
+                        // The transform will remain from the auto-animate class
+                    }
+                }, 600);
+                
+                // Auto-hide the tooltip and reset photo position after 5 seconds
+                setTimeout(function() {
+                    photoTooltip.classList.remove('auto-show');
+                    // Remove animation class to reset photo position
+                    if (photoElement) {
+                        photoElement.classList.remove('auto-animate');
+                    }
+                }, 5000);
+            } else {
+                console.log('Tooltip not shown - conditions not met');
+            }
+        }
+        
+        // Track navigation events - detect clicks on links
+        // This includes sidebar links, footer links, and any other navigation links
+        const allLinks = document.querySelectorAll('a[href]');
+        allLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                // Mark that user has navigated
+                hasNavigated = true;
+                console.log('Navigation detected - tooltip will not show');
+            });
+        });
+        
+        // Set timeout to show tooltip after 7 seconds (only if no navigation occurred)
+        // Only set timeout if tooltip hasn't been shown before (in this session)
+        if (!tooltipAlreadyShown) {
+            console.log('Setting timeout for tooltip - will show in 7 seconds if no navigation');
+            setTimeout(showPhotoTooltipAuto, 7000);
+        } else {
+            console.log('Tooltip already shown in this session - skipping');
+        }
 
         /* ========================================
            STICKY TOP CTA TEASER SYSTEM
