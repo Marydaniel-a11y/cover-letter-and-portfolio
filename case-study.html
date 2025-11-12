@@ -97,7 +97,7 @@
         }
 
         .case-title {
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-color);
             line-height: normal;
@@ -106,7 +106,7 @@
         /* HERO IMAGE */
         .hero-image {
             width: 100%;
-            height: 276px;
+            height: 374px;
             margin-bottom: 20px;
             background-color: var(--photo-bg);
             overflow: hidden;
@@ -129,7 +129,7 @@
         }
 
         .section-title {
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-color);
             line-height: normal;
@@ -260,7 +260,7 @@
         .outcome-image-large {
             position: relative;
             width: 100%;
-            height: 349px;
+            height: 374px;
             background-color: var(--outcome-bg-green);
             margin-bottom: 0;
             display: flex;
@@ -425,6 +425,88 @@
             border-left: 4px solid rgba(255, 255, 255, 0.95);
         }
 
+        /* ========================================
+           SKELETON LOADING
+           ======================================== */
+        
+        .skeleton-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+        
+        .skeleton-loader.active {
+            display: flex;
+        }
+        
+        .skeleton-paragraph {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .skeleton-line {
+            height: 20px;
+            background: linear-gradient(
+                90deg, 
+                var(--text-muted) 0%,
+                var(--text-color) 50%,
+                var(--text-muted) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 4px;
+            opacity: 0.15;
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+        
+        .skeleton-line.full { width: 100%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line.medium { width: 85%; }
+        .skeleton-line.short { width: 60%; }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        /* Hide text content when loading - but keep skeleton visible */
+        .section-content.loading > p,
+        .numbered-item-description.loading .numbered-text {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Ensure containers are positioned relatively for absolute skeleton positioning */
+        .section-content,
+        .numbered-item-description {
+            position: relative;
+            min-height: 40px; /* Ensure minimum height for skeleton visibility */
+        }
+        
+        .section.loading,
+        .challenge-content.loading,
+        .numbered-item.loading {
+            position: relative;
+        }
+        
+        /* For challenge section, hide paragraphs but keep container visible */
+        .challenge-content.loading .section-content > p {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             body {
@@ -503,7 +585,7 @@
             <div class="toggle-knob">
                 <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
             </div>
-            <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
+            <div class="toggle-tooltip" id="toggleTooltip">Switch to dark mode</div>
         </div>
         
         <!-- BACK NAVIGATION -->
@@ -524,9 +606,16 @@
         </div>
 
         <!-- OVERVIEW SECTION -->
-        <div class="section">
+        <div class="section" id="overviewSection">
             <h2 class="section-title">Overview</h2>
-            <div class="section-content">
+            <div class="section-content" id="overviewContent">
+                <div class="skeleton-loader" id="overviewSkeleton">
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                </div>
                 <p>When we looked at the <strong>onboarding funnel for Content Lab</strong>, the numbers told a clear story:</p>
                 <p>&nbsp;</p>
                 <p><strong>only 34% of new users uploaded a video after landing in the product</strong>. Most dropped off before taking their first creative action.</p>
@@ -534,21 +623,33 @@
         </div>
 
         <!-- MY ROLE SECTION -->
-        <div class="section">
+        <div class="section" id="myRoleSection">
             <h2 class="section-title">My role</h2>
-            <div class="section-content">
+            <div class="section-content" id="myRoleContent">
+                <div class="skeleton-loader" id="myRoleSkeleton">
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                </div>
                 <p>Our goal was to turn that hesitation into <strong>curiosity and educational fennel</strong> that will help users understand our product value proposition.</p>
             </div>
         </div>
 
-        <!-- THE CHALLENGE SECTION -->
+        <!-- THE PAIN POINTS SECTION -->
         <div class="challenge-section">
             <div class="challenge-visual">
                 <div class="challenge-emoji" id="challengeEmoji">🥵</div>
             </div>
-            <div class="challenge-content">
-                <h2 class="section-title">The challenge</h2>
-                <div class="section-content">
+            <div class="challenge-content" id="challengeContent">
+                <h2 class="section-title">The pain points</h2>
+                <div class="section-content" id="challengeSectionContent">
+                    <div class="skeleton-loader" id="challengeSkeleton">
+                        <div class="skeleton-paragraph">
+                            <div class="skeleton-line medium"></div>
+                            <div class="skeleton-line medium"></div>
+                        </div>
+                    </div>
                     <p><strong>Low motivation</strong> — users didn't yet see the value of uploading.</p>
                     <p><strong>High friction</strong> — unclear upload rules and failed first attempts.</p>
                 </div>
@@ -556,50 +657,75 @@
         </div>
 
         <!-- GOALS SECTION -->
-        <div class="section">
+        <div class="section" id="goalsSection">
             <h2 class="section-title">Goals</h2>
-            <div class="section-content">
-                <p>Our KPIs focused on improving upload completion rate and reducing upload errors due to file format or length.</p>
+            <div class="section-content" id="goalsContent">
+                <div class="skeleton-loader" id="goalsSkeleton">
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                </div>
+                <p>Our KPIs focused on improving <strong>upload completion rate and reducing upload errors</strong> due to file format or length.</p>
             </div>
         </div>
 
         <!-- NUMBERED SOLUTIONS -->
         <div class="numbered-list">
-            <div class="numbered-item">
+            <div class="numbered-item" id="numberedItem1">
                 <div class="numbered-item-content">
                     <div class="numbered-item-title">
                         <ol start="1">
                             <li>Start Instantly</li>
                         </ol>
                     </div>
-                    <div class="numbered-item-description">
-                        Added a "Try our sample videos" entry point so users could explore tools without needing to upload first.
+                    <div class="numbered-item-description" id="numberedDesc1">
+                        <div class="skeleton-loader" id="numberedSkeleton1">
+                            <div class="skeleton-paragraph">
+                                <div class="skeleton-line full"></div>
+                                <div class="skeleton-line medium"></div>
+                            </div>
+                        </div>
+                        <span class="numbered-text">Added a "Try our sample videos" entry point so users could explore tools without needing to upload first.</span>
                     </div>
                 </div>
             </div>
 
-            <div class="numbered-item">
+            <div class="numbered-item" id="numberedItem2">
                 <div class="numbered-item-content">
                     <div class="numbered-item-title">
                         <ol start="2">
                             <li>Build Confidence</li>
                         </ol>
                     </div>
-                    <div class="numbered-item-description">
-                        Clarified upload constraints directly in the modal (max length, file size, and best practices) so users can upload successfully on the first try.
+                    <div class="numbered-item-description" id="numberedDesc2">
+                        <div class="skeleton-loader" id="numberedSkeleton2">
+                            <div class="skeleton-paragraph">
+                                <div class="skeleton-line full"></div>
+                                <div class="skeleton-line full"></div>
+                                <div class="skeleton-line short"></div>
+                            </div>
+                        </div>
+                        <span class="numbered-text">Clarified upload constraints directly in the modal (max length, file size, and best practices) so users can upload successfully on the first try.</span>
                     </div>
                 </div>
             </div>
 
-            <div class="numbered-item">
+            <div class="numbered-item" id="numberedItem3">
                 <div class="numbered-item-content">
                     <div class="numbered-item-title">
                         <ol start="3">
                             <li>Understand the Value</li>
                         </ol>
                     </div>
-                    <div class="numbered-item-description">
-                        Introduced contextual videos that show what each AI tool can create — helping users grasp the benefit before they start.
+                    <div class="numbered-item-description" id="numberedDesc3">
+                        <div class="skeleton-loader" id="numberedSkeleton3">
+                            <div class="skeleton-paragraph">
+                                <div class="skeleton-line full"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                        <span class="numbered-text">Introduced contextual videos that show what each AI tool can create — helping users grasp the benefit before they start.</span>
                     </div>
                 </div>
             </div>
@@ -615,7 +741,14 @@
                 <img src="refernces/refernce_2.jpg" alt="Outcome visualization">
             </div>
 
-            <div class="section-content reduced-gap">
+            <div class="section-content reduced-gap" id="outcomeContent1">
+                <div class="skeleton-loader" id="outcomeSkeleton1">
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                </div>
                 <p class="italic-text">To accelerate alignment, I used AI-assisted prototyping with Claude and GPT — generating copy, flow variations, and motion snippets to present concepts to stakeholders in hours instead of days.</p>
             </div>
 
@@ -632,7 +765,23 @@
             </div>
 
             <!-- Results text -->
-            <div class="section-content">
+            <div class="section-content" id="outcomeContent2">
+                <div class="skeleton-loader" id="outcomeSkeleton2">
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line medium"></div>
+                    </div>
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line long"></div>
+                    </div>
+                    <div class="skeleton-paragraph">
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line full"></div>
+                        <div class="skeleton-line short"></div>
+                    </div>
+                </div>
                 <p>This was a simple improvement that made a big impact — helping guide and educate users through their first experience with the new product.</p>
                 <p>&nbsp;</p>
                 <p>After launch, the redesign led to a <strong>24% increase in click-throughs</strong> on the first upload interaction.</p>
@@ -663,11 +812,11 @@
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
             toggleIcon.src = 'toggle/dark_mode.png';
-            toggleTooltip.textContent = 'Back to work mode';
+            toggleTooltip.textContent = 'Back to light mode';
         } else {
             body.classList.remove('dark-mode');
             toggleIcon.src = 'toggle/light_mode.png';
-            toggleTooltip.textContent = 'Switch to see me beyond work';
+            toggleTooltip.textContent = 'Switch to dark mode';
         }
 
         themeToggleButton.addEventListener('click', function() {
@@ -676,15 +825,63 @@
             if (isDarkMode) {
                 body.classList.remove('dark-mode');
                 toggleIcon.src = 'toggle/light_mode.png';
-                toggleTooltip.textContent = 'Switch to see me beyond work';
+                toggleTooltip.textContent = 'Switch to dark mode';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.classList.add('dark-mode');
                 toggleIcon.src = 'toggle/dark_mode.png';
-                toggleTooltip.textContent = 'Back to work mode';
+                toggleTooltip.textContent = 'Back to light mode';
                 localStorage.setItem('theme', 'dark');
             }
         });
+
+        /* SKELETON LOADING ANIMATION ON PAGE LOAD */
+        // Get all skeleton loaders and their corresponding content containers
+        const skeletonLoaders = [
+            { skeleton: document.getElementById('overviewSkeleton'), content: document.getElementById('overviewContent'), section: document.getElementById('overviewSection') },
+            { skeleton: document.getElementById('myRoleSkeleton'), content: document.getElementById('myRoleContent'), section: document.getElementById('myRoleSection') },
+            { skeleton: document.getElementById('challengeSkeleton'), content: document.getElementById('challengeSectionContent'), section: document.getElementById('challengeContent') },
+            { skeleton: document.getElementById('goalsSkeleton'), content: document.getElementById('goalsContent'), section: document.getElementById('goalsSection') },
+            { skeleton: document.getElementById('numberedSkeleton1'), content: document.getElementById('numberedDesc1'), section: document.getElementById('numberedItem1') },
+            { skeleton: document.getElementById('numberedSkeleton2'), content: document.getElementById('numberedDesc2'), section: document.getElementById('numberedItem2') },
+            { skeleton: document.getElementById('numberedSkeleton3'), content: document.getElementById('numberedDesc3'), section: document.getElementById('numberedItem3') },
+            { skeleton: document.getElementById('outcomeSkeleton1'), content: document.getElementById('outcomeContent1'), section: null },
+            { skeleton: document.getElementById('outcomeSkeleton2'), content: document.getElementById('outcomeContent2'), section: null }
+        ];
+
+        // Function to show skeleton loaders
+        function showSkeletons() {
+            skeletonLoaders.forEach(function(item) {
+                if (item.skeleton && item.content) {
+                    item.skeleton.classList.add('active');
+                    item.content.classList.add('loading');
+                    if (item.section) {
+                        item.section.classList.add('loading');
+                    }
+                }
+            });
+        }
+
+        // Function to hide skeleton loaders
+        function hideSkeletons() {
+            skeletonLoaders.forEach(function(item) {
+                if (item.skeleton && item.content) {
+                    item.skeleton.classList.remove('active');
+                    item.content.classList.remove('loading');
+                    if (item.section) {
+                        item.section.classList.remove('loading');
+                    }
+                }
+            });
+        }
+
+        // Show skeletons immediately when page loads
+        showSkeletons();
+
+        // Hide skeletons after animation duration (same as cover letter: 1500ms)
+        setTimeout(function() {
+            hideSkeletons();
+        }, 1500);
 
         /* EMOJI ROTATION FOR CHALLENGE SECTION */
         const challengeEmoji = document.getElementById('challengeEmoji');
