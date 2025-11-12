@@ -249,15 +249,31 @@
             font-size: 10px;
             line-height: normal;
             color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .contact-info a {
             color: var(--text-color);
             text-decoration: underline;
+            transition: color 0.2s ease;
         }
 
         .contact-info a:hover {
-            opacity: 0.7;
+            color: var(--accent-red); /* Red primary color on hover */
+        }
+
+        /* Copy-to-clipboard element styling - looks like a link */
+        .contact-info-copy {
+            color: var(--text-color);
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .contact-info-copy:hover {
+            color: var(--accent-red); /* Red primary color on hover */
         }
 
         /* DATE */
@@ -290,9 +306,19 @@
             line-height: 20px;
         }
 
+        /* SIGNATURE AND FOOTER CONTAINER */
+        .signature-footer-container {
+            display: flex;
+            flex-direction: row; /* Horizontal layout */
+            justify-content: space-between; /* Footer on left, signature on right */
+            align-items: flex-end; /* Align items to bottom */
+            width: 100%;
+            margin-top: 20px;
+        }
+
         /* SIGNATURE SECTION */
         .signature-section {
-            margin-top: 20px;
+            margin-top: 0; /* Container handles spacing */
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -317,6 +343,39 @@
             width: 48.954px;
             height: 59.725px;
             margin-top: 5px;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 0; /* Container handles spacing */
+            padding-top: 0;
+            border-top: none; /* No border in horizontal layout */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Left-align footer text */
+            gap: 3px;
+        }
+
+        .footer-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: normal;
+            text-align: left; /* Left-align text content */
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-red); /* Red primary color on hover */
+        }
+
+        body.dark-mode .footer {
+            border-top-color: rgba(249, 243, 239, 0.1);
         }
 
         /* HOVER EFFECT */
@@ -521,77 +580,129 @@
             flex-direction: row;
             justify-content: center;
             align-items: flex-start;
-            z-index: 999; /* Lower than theme toggle (1001) to avoid overlap */
+            z-index: 1002; /* Higher than theme toggle (1001) so dropdown appears above it */
             pointer-events: none;
         }
 
-        /* Wrapper for teaser to enable relative positioning of panel */
+        /* Wrapper for teaser and dropdown - provides relative positioning context */
         .cta-teaser-wrapper {
             position: relative;
             display: inline-block;
         }
 
-        /* Expandable panel to the right of teaser - styled as direct link */
+        /* Dropdown panel - absolutely positioned relative to wrapper */
+        /* On desktop: appears to the right of teaser */
+        /* On mobile: appears below teaser */
         .cta-expandable-panel {
             position: absolute;
+            /* Desktop: position to the right */
             top: 0;
             left: 100%; /* Start from right edge of teaser */
             margin-left: -1px; /* Overlap border for seamless connection */
+            /* Panel styling */
             width: auto;
             min-width: 280px;
             max-width: 595px; /* Match page content width */
-            height: 100%; /* Match teaser height */
             background-color: var(--bg-color);
             border: 1px solid rgba(43, 31, 56, 0.1);
             border-left: none;
             border-radius: 0 0 12px 0;
-            padding: 0 20px;
+            padding: 0;
             box-shadow: 4px 4px 20px rgba(43, 31, 56, 0.1);
+            /* Hidden state */
             opacity: 0;
             max-width: 0;
             overflow: hidden;
-            white-space: nowrap;
             pointer-events: none;
+            /* Content layout - flex column for multiple links */
             display: flex;
-            align-items: center; /* Vertically center content */
-            text-decoration: none;
-            color: var(--text-color);
+            flex-direction: column;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
+            /* Smooth transitions */
             transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                         max-width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                         padding-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        padding-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        background-color 0.2s ease;
+                        padding-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
+        /* Expanded state - panel is visible */
         .cta-expandable-panel.expanded {
             opacity: 1;
-            max-width: 595px;
+            width: 270px; /* Fixed width for expanded panel */
+            max-width: 270px;
             padding-left: 20px;
             padding-right: 20px;
+            padding-top: 12px;
+            padding-bottom: 12px;
             pointer-events: auto;
-            white-space: normal;
         }
 
-        .cta-expandable-panel:hover {
+        /* Individual link items in the dropdown */
+        .cta-panel-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px; /* 8px padding on all sides */
+            text-decoration: none;
+            color: var(--text-color);
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            /* Allow text to wrap if needed */
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* Hover effect on individual links */
+        .cta-panel-link:hover {
             background-color: rgba(43, 31, 56, 0.02);
         }
 
-        body.dark-mode .cta-expandable-panel:hover {
+        body.dark-mode .cta-panel-link:hover {
             background-color: rgba(249, 243, 239, 0.03);
         }
 
-        /* Arrow icon in panel */
+        /* Arrow icon in panel links */
         .cta-panel-arrow {
             margin-left: 8px;
             font-size: 14px;
             transition: transform 0.2s ease;
             flex-shrink: 0;
+            opacity: 0.7;
         }
 
-        .cta-expandable-panel:hover .cta-panel-arrow {
+        .cta-panel-link:hover .cta-panel-arrow {
             transform: translateX(2px);
+            opacity: 1;
+        }
+
+        /* Coming soon items - non-clickable, same styling but no hover effect */
+        .cta-panel-link-coming-soon {
+            cursor: not-allowed; /* Shows "not allowed" cursor (circle with line) to indicate disabled */
+            opacity: 0.8; /* Slightly muted to indicate disabled state */
+        }
+
+        .cta-panel-link-coming-soon:hover {
+            background-color: transparent; /* No hover effect */
+        }
+
+        /* COMING SOON badge styling */
+        .cta-panel-coming-soon {
+            margin-left: 8px;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--accent-red); /* Red color using accent variable */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        /* Dark mode adjustment for coming soon badge */
+        body.dark-mode .cta-panel-coming-soon {
+            color: var(--accent-red); /* Purple accent in dark mode */
+            opacity: 0.8;
         }
 
         /* Sticky top teaser - always visible */
@@ -692,7 +803,7 @@
             }
         }
 
-        /* Responsive: Adjust padding on smaller screens */
+        /* Responsive: Mobile screens - dropdown appears below teaser */
         @media (max-width: 768px) {
             .cta-teaser {
                 max-width: 100%;
@@ -707,40 +818,50 @@
                 border-width: 3px 0 3px 5px;
             }
             
-            /* On mobile, panel expands downward instead of to the right */
+            /* Mobile: Dropdown panel positioned below teaser */
             .cta-expandable-panel {
                 position: absolute;
-                top: 100%; /* Position below teaser */
-                left: 0;
-                right: 0;
-                margin-left: 0;
-                width: 100%;
+                top: 100%; /* Position directly below teaser */
+                left: 0; /* Align with left edge of teaser */
+                right: 0; /* Align with right edge of teaser */
+                margin-left: 0; /* Reset desktop margin */
+                width: 100%; /* Full width of teaser */
                 max-width: 100%;
                 min-width: auto;
-                height: auto; /* Reset height for mobile */
+                height: auto; /* Allow height to grow with content */
+                /* Border adjustments for bottom positioning */
                 border-left: 1px solid rgba(43, 31, 56, 0.1);
-                border-top: none;
-                border-radius: 0 0 12px 12px;
-                padding: 0 16px;
-                box-shadow: 0 4px 20px rgba(43, 31, 56, 0.1);
+                border-top: none; /* No top border since it connects to teaser */
+                border-radius: 0 0 12px 12px; /* Rounded bottom corners */
+                padding: 0;
+                box-shadow: 0 4px 20px rgba(43, 31, 56, 0.1); /* Shadow below */
+                /* Hidden state for mobile */
                 max-height: 0;
                 overflow: hidden;
-                white-space: nowrap;
                 display: flex;
-                align-items: flex-start; /* Align to top on mobile */
+                flex-direction: column; /* Stack links vertically */
             }
             
+            /* Expanded state on mobile */
             .cta-expandable-panel.expanded {
+                width: 100%; /* Override desktop 270px width */
                 max-width: 100%;
-                max-height: 200px;
+                max-height: 300px; /* Limit height to prevent overflow */
+                padding-left: 16px;
+                padding-right: 16px;
                 padding-top: 12px;
                 padding-bottom: 12px;
-                height: auto; /* Allow height to grow on mobile */
+                height: auto; /* Allow height to grow with content */
             }
             
-            /* Reset teaser border-radius on mobile when expanded */
+            /* Mobile link styling */
+            .cta-panel-link {
+                padding: 10px 8px; /* Top/bottom: 10px, left/right: 8px */
+            }
+            
+            /* Adjust teaser border-radius when dropdown is open on mobile */
             .cta-teaser-wrapper:has(.cta-expandable-panel.expanded) .cta-teaser {
-                border-radius: 0;
+                border-radius: 0; /* Remove bottom rounding when dropdown is open */
             }
         }
         
@@ -837,6 +958,122 @@
             transition: opacity 0.3s ease;
         }
 
+        /* ========================================
+           IMAGE MODAL PREVIEW
+           ======================================== */
+        
+        /* Modal overlay - dark background that covers entire screen */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000; /* Higher than other elements */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+            cursor: pointer; /* Indicates it's clickable to close */
+        }
+        
+        /* Show modal when active */
+        .image-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Modal container - holds the image */
+        .image-modal-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default; /* Don't show pointer on image itself */
+        }
+        
+        /* The enlarged image */
+        .image-modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        /* Fade-in animation for the image */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Close button (X) */
+        .image-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #2B1F38;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            z-index: 2001;
+            line-height: 1;
+        }
+        
+        .image-modal-close:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Make images clickable with pointer cursor */
+        .photo img,
+        .signature-image img {
+            cursor: pointer;
+        }
+        
+        /* Slight hover effect on images to indicate they're clickable */
+        .photo img:hover,
+        .signature-image img:hover {
+            opacity: 0.9;
+        }
+        
+        /* Responsive adjustments for modal */
+        @media (max-width: 768px) {
+            .image-modal-close {
+                top: -35px;
+                width: 28px;
+                height: 28px;
+                font-size: 18px;
+            }
+            
+            .image-modal-container {
+                max-width: 95vw;
+            }
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             body {
@@ -881,8 +1118,14 @@
                 line-height: 18px;
             }
 
-            .signature-section {
+            .signature-footer-container {
+                flex-direction: column; /* Stack vertically on mobile */
+                align-items: flex-start; /* Left-align on mobile */
                 margin-top: 24px;
+            }
+
+            .signature-section {
+                margin-top: 0; /* Container handles spacing */
                 align-items: flex-start;
                 width: 100%;
             }
@@ -900,6 +1143,19 @@
             .signature-image {
                 width: 40px;
                 height: auto;
+            }
+
+            .footer {
+                margin-top: 24px; /* Spacing between footer and signature on mobile */
+                padding-top: 16px;
+                border-top: 1px solid rgba(43, 31, 56, 0.1); /* Add border on mobile */
+                align-items: flex-start; /* Left-align on mobile, matching signature section */
+                width: 100%; /* Full width on mobile */
+            }
+
+            .footer-text {
+                font-size: 9px;
+                text-align: left; /* Left-align text on mobile */
             }
 
             .theme-toggle {
@@ -935,9 +1191,96 @@
                 font-size: 11px;
             }
         }
+
+        /* ========================================
+           MOBILE COMING SOON GATE
+           ======================================== */
+        
+        /* Mobile gate - full screen overlay for small screens */
+        .mobile-coming-soon-gate {
+            display: none; /* Hidden by default (desktop) */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 10000; /* Very high z-index to block all content */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInGate 0.6s ease-in-out forwards;
+        }
+
+        /* Fade-in animation for the gate */
+        @keyframes fadeInGate {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Mobile gate icon */
+        .mobile-gate-icon {
+            font-size: 48px;
+            margin-bottom: 24px;
+            animation: iconBounce 1s ease-in-out infinite;
+        }
+
+        /* Subtle bounce animation for icon */
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Mobile gate message */
+        .mobile-gate-message {
+            font-size: 16px;
+            line-height: 24px;
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            max-width: 300px;
+            margin: 0;
+        }
+
+        /* Show gate only on mobile screens */
+        @media (max-width: 768px) {
+            .mobile-coming-soon-gate {
+                display: flex;
+            }
+            
+            /* Hide all content behind the gate */
+            body.mobile-gate-active .container,
+            body.mobile-gate-active .cta-teaser-container,
+            body.mobile-gate-active .theme-toggle {
+                display: none;
+            }
+        }
+
+        /* Hide gate on larger screens */
+        @media (min-width: 769px) {
+            .mobile-coming-soon-gate {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- MOBILE COMING SOON GATE -->
+    <div class="mobile-coming-soon-gate" id="mobileComingSoonGate">
+        <div class="mobile-gate-icon">📱</div>
+        <p class="mobile-gate-message">Mobile version coming soon — best viewed on desktop.</p>
+    </div>
+
     <div class="container">
         
         <div class="emoji-display" id="emojiDisplay">🏙️</div>
@@ -962,15 +1305,14 @@
                 <p>Mary Daniel</p>
                 <p>Tel Aviv, Israel</p>
                 <p><a href="mailto:marydaniel.product@gmail.com">marydaniel.product@gmail.com</a></p>
-                <p><a href="https://w.app/fxbzxn" target="_blank">+972 52-6394238</a></p>
+                <p><span class="contact-info-copy" id="phoneCopy" data-copy-text="+972 52-6394238">+972 52-6394238</span></p>
                 <p>
-                    <a href="https://mary-daniel-portfolio.webflow.io/" target="_blank">[Portfolio]</a>
                     <a href="https://www.linkedin.com/in/mary-daniel-676b161b1/" target="_blank">[LinkedIn]</a>
                 </p>
             </div>
         </div>
 
-        <div class="date">Nov 2, 2025</div>
+        <div class="date">Nov 12, 2025</div>
 
         <!-- LETTER CONTENT -->
         <div class="letter-content" id="letterContent">
@@ -1031,18 +1373,29 @@
             </p>
         </div>
 
-        <!-- SIGNATURE -->
-        <div class="signature-section">
-            <div class="closing">
-                <p><span class="hoverable-word" data-emoji="🙏">Thanks,</span></p>
-                <p>Mary Daniel</p>
+        <!-- SIGNATURE AND FOOTER CONTAINER -->
+        <div class="signature-footer-container">
+            <!-- FOOTER -->
+            <div class="footer">
+                <p class="footer-text">
+                    © Mary Daniel · Designed & coded in <a href="https://cursor.sh" target="_blank" class="footer-link">Cursor</a>
+                </p>
+                <p class="footer-text">All rights reserved.</p>
             </div>
-            
-            <p class="job-title light-mode-only">Product Designer</p>
-            <p class="job-title dark-mode-only">Human Being</p>
-            
-            <div class="signature-image">
-                <img src="assets_personal/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
+
+            <!-- SIGNATURE -->
+            <div class="signature-section">
+                <div class="closing">
+                    <p><span class="hoverable-word" data-emoji="🙏">Thanks,</span></p>
+                    <p>Mary Daniel</p>
+                </div>
+                
+                <p class="job-title light-mode-only">Product Designer</p>
+                <p class="job-title dark-mode-only">Human Being</p>
+                
+                <div class="signature-image">
+                    <img src="assets_personal/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
             </div>
         </div>
 
@@ -1057,11 +1410,31 @@
                 <span class="cta-teaser-caret"></span>
             </div>
             
-            <!-- Expandable panel to the right of teaser - direct link -->
-            <a href="case-study.html" class="cta-expandable-panel" id="ctaExpandablePanel">
-                How I redesigned onboarding at Lightricks' Content Lab
-                <span class="cta-panel-arrow">→</span>
-            </a>
+            <!-- Dropdown panel - contains multiple case study links -->
+            <div class="cta-expandable-panel" id="ctaExpandablePanel">
+                <a href="case-study.html" class="cta-panel-link">
+                    How I redesigned onboarding at Lightricks' Content Lab
+                    <span class="cta-panel-arrow">→</span>
+                </a>
+                <div class="cta-panel-link cta-panel-link-coming-soon">
+                    How I built UGC AI flow at Lightricks'
+                    <span class="cta-panel-coming-soon">COMING SOON</span>
+                </div>
+                <div class="cta-panel-link cta-panel-link-coming-soon">
+                    How I redesigned Branded Apps premium page at Wix
+                    <span class="cta-panel-coming-soon">COMING SOON</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================
+         IMAGE MODAL PREVIEW
+         ======================================== -->
+    <div class="image-modal-overlay" id="imageModalOverlay">
+        <div class="image-modal-container" id="imageModalContainer">
+            <button class="image-modal-close" id="imageModalClose" aria-label="Close modal">×</button>
+            <img class="image-modal-image" id="imageModalImage" src="" alt="Enlarged image">
         </div>
     </div>
 
@@ -1169,9 +1542,9 @@
         const ctaTeaser = document.getElementById('ctaTeaser');
         const ctaExpandablePanel = document.getElementById('ctaExpandablePanel');
 
-        // Show teaser after random delay between 2-3 seconds with smooth animation
-        // Generate random delay between 2000ms (2s) and 3000ms (3s)
-        const randomDelay = Math.floor(Math.random() * 1000) + 2000;
+        // Show teaser after random delay between 1-2 seconds with smooth animation
+        // Generate random delay between 1000ms (1s) and 2000ms (2s)
+        const randomDelay = Math.floor(Math.random() * 1000) + 1000;
         
         setTimeout(function() {
             // Add 'visible' class to trigger smooth slide-down animation from top
@@ -1193,6 +1566,52 @@
                     // Expand panel
                     ctaExpandablePanel.classList.add('expanded');
                 }
+            });
+        }
+
+        /* ========================================
+           COPY PHONE NUMBER FUNCTIONALITY
+           ======================================== */
+        const phoneCopy = document.getElementById('phoneCopy');
+        
+        if (phoneCopy) {
+            phoneCopy.addEventListener('click', function() {
+                const phoneNumber = this.getAttribute('data-copy-text');
+                const originalText = this.textContent;
+                
+                // Use the modern Clipboard API
+                navigator.clipboard.writeText(phoneNumber).then(function() {
+                    // Success - show "Copied!" feedback
+                    phoneCopy.textContent = 'Copied!';
+                    
+                    // Restore original text after 2 seconds
+                    setTimeout(function() {
+                        phoneCopy.textContent = originalText;
+                    }, 2000);
+                }).catch(function(err) {
+                    // Fallback for older browsers - create a temporary textarea
+                    const textarea = document.createElement('textarea');
+                    textarea.value = phoneNumber;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        // Success - show "Copied!" feedback
+                        phoneCopy.textContent = 'Copied!';
+                        
+                        // Restore original text after 2 seconds
+                        setTimeout(function() {
+                            phoneCopy.textContent = originalText;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy phone number:', err);
+                    }
+                    
+                    document.body.removeChild(textarea);
+                });
             });
         }
 
@@ -1243,6 +1662,137 @@
         
         // Also check on initial load in case user is already scrolled down
         checkScrollForBounce();
+
+        /* ========================================
+           IMAGE MODAL PREVIEW SYSTEM
+           ======================================== */
+        
+        // Get modal elements
+        const imageModalOverlay = document.getElementById('imageModalOverlay');
+        const imageModalImage = document.getElementById('imageModalImage');
+        const imageModalClose = document.getElementById('imageModalClose');
+        const imageModalContainer = document.getElementById('imageModalContainer');
+        
+        // Function to open the modal with an image
+        function openImageModal(imageSrc, imageAlt) {
+            // Set the image source and alt text
+            imageModalImage.src = imageSrc;
+            imageModalImage.alt = imageAlt || 'Enlarged image';
+            
+            // Show the modal by adding 'active' class
+            imageModalOverlay.classList.add('active');
+            
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Function to close the modal
+        function closeImageModal() {
+            // Hide the modal by removing 'active' class
+            imageModalOverlay.classList.remove('active');
+            
+            // Restore body scrolling
+            document.body.style.overflow = '';
+        }
+        
+        // Add click event listeners to all images
+        // Get signature image (profilePhoto is already declared above)
+        const signatureImage = document.querySelector('.signature-image img');
+        
+        // Open modal when clicking on profile photo (reusing existing profilePhoto variable)
+        if (profilePhoto) {
+            profilePhoto.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent any other click handlers
+                openImageModal(this.src, this.alt);
+            });
+        }
+        
+        // Open modal when clicking on signature image
+        if (signatureImage) {
+            signatureImage.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent any other click handlers
+                openImageModal(this.src, this.alt);
+            });
+        }
+        
+        // Close modal when clicking the close button
+        if (imageModalClose) {
+            imageModalClose.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent closing the container too
+                closeImageModal();
+            });
+        }
+        
+        // Close modal when clicking on the overlay (dark background)
+        if (imageModalOverlay) {
+            imageModalOverlay.addEventListener('click', function(e) {
+                // Only close if clicking directly on overlay, not on the image container
+                if (e.target === imageModalOverlay) {
+                    closeImageModal();
+                }
+            });
+        }
+        
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            // Check if Escape key was pressed and modal is open
+            if (e.key === 'Escape' && imageModalOverlay.classList.contains('active')) {
+                closeImageModal();
+            }
+        });
+        
+        // Prevent closing when clicking on the image itself
+        if (imageModalContainer) {
+            imageModalContainer.addEventListener('click', function(e) {
+                e.stopPropagation(); // Stop the click from reaching the overlay
+            });
+        }
+
+        /* ========================================
+           MOBILE COMING SOON GATE SYSTEM
+           ======================================== */
+        
+        const mobileGate = document.getElementById('mobileComingSoonGate');
+        
+        // Function to check screen size and show/hide gate
+        function checkMobileGate() {
+            if (window.innerWidth <= 768) {
+                // Mobile viewport - show gate and prevent scrolling
+                if (mobileGate) {
+                    mobileGate.style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                    document.body.classList.add('mobile-gate-active');
+                }
+            } else {
+                // Desktop viewport - hide gate and allow scrolling
+                if (mobileGate) {
+                    mobileGate.style.display = 'none';
+                    document.body.style.overflow = ''; // Restore scrolling
+                    document.body.classList.remove('mobile-gate-active');
+                }
+            }
+        }
+        
+        // Check on page load
+        checkMobileGate();
+        
+        // Check on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(checkMobileGate, 100); // Debounce resize
+        });
+        
+        // Prevent any interaction with content behind the gate on mobile
+        if (mobileGate) {
+            mobileGate.addEventListener('touchmove', function(e) {
+                e.preventDefault(); // Prevent scrolling behind gate
+            }, { passive: false });
+            
+            mobileGate.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent clicks from reaching content behind
+            });
+        }
     </script>
 </body>
 </html>

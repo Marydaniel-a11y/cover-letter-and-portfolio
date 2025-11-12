@@ -144,6 +144,122 @@
             color: rgba(34, 34, 59, 0.6);
         }
 
+        /* ========================================
+           IMAGE MODAL PREVIEW
+           ======================================== */
+        
+        /* Modal overlay - dark background that covers entire screen */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000; /* Higher than other elements */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+            cursor: pointer; /* Indicates it's clickable to close */
+        }
+        
+        /* Show modal when active */
+        .image-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Modal container - holds the image */
+        .image-modal-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default; /* Don't show pointer on image itself */
+        }
+        
+        /* The enlarged image */
+        .image-modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        /* Fade-in animation for the image */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Close button (X) */
+        .image-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #2B1F38;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            z-index: 2001;
+            line-height: 1;
+        }
+        
+        .image-modal-close:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        /* Make images clickable with pointer cursor */
+        .preview-image,
+        .thumbnail img {
+            cursor: pointer;
+        }
+        
+        /* Slight hover effect on images to indicate they're clickable */
+        .preview-image:hover,
+        .thumbnail img:hover {
+            opacity: 0.9;
+        }
+        
+        /* Responsive adjustments for modal */
+        @media (max-width: 768px) {
+            .image-modal-close {
+                top: -35px;
+                width: 28px;
+                height: 28px;
+                font-size: 18px;
+            }
+            
+            .image-modal-container {
+                max-width: 95vw;
+            }
+        }
+
         /* RESPONSIVE - Adjustments for smaller screens (tablets and phones) */
         @media (max-width: 768px) {
             body {
@@ -226,6 +342,16 @@
 
     <!-- FOOTNOTE - Fixed at bottom -->
 
+    <!-- ========================================
+         IMAGE MODAL PREVIEW
+         ======================================== -->
+    <div class="image-modal-overlay" id="imageModalOverlay">
+        <div class="image-modal-container" id="imageModalContainer">
+            <button class="image-modal-close" id="imageModalClose" aria-label="Close modal">×</button>
+            <img class="image-modal-image" id="imageModalImage" src="" alt="Enlarged image">
+        </div>
+    </div>
+
     <!-- JAVASCRIPT - The code that makes thumbnails interactive -->
     <script>
         /**
@@ -266,6 +392,86 @@
             // STEP 4: Add the "active" class to the clicked thumbnail
             // This adds the border and scale to show which thumbnail is currently selected
             thumbnail.classList.add('active');
+        }
+
+        /* ========================================
+           IMAGE MODAL PREVIEW SYSTEM
+           ======================================== */
+        
+        // Get modal elements
+        const imageModalOverlay = document.getElementById('imageModalOverlay');
+        const imageModalImage = document.getElementById('imageModalImage');
+        const imageModalClose = document.getElementById('imageModalClose');
+        const imageModalContainer = document.getElementById('imageModalContainer');
+        
+        // Function to open the modal with an image
+        function openImageModal(imageSrc, imageAlt) {
+            // Set the image source and alt text
+            imageModalImage.src = imageSrc;
+            imageModalImage.alt = imageAlt || 'Enlarged image';
+            
+            // Show the modal by adding 'active' class
+            imageModalOverlay.classList.add('active');
+            
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Function to close the modal
+        function closeImageModal() {
+            // Hide the modal by removing 'active' class
+            imageModalOverlay.classList.remove('active');
+            
+            // Restore body scrolling
+            document.body.style.overflow = '';
+        }
+        
+        // Add click event listeners to images
+        // Get preview image - clicking it opens the modal
+        const previewImage = document.getElementById('preview');
+        
+        // Open modal when clicking on preview image
+        if (previewImage) {
+            previewImage.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent any other click handlers
+                openImageModal(this.src, this.alt);
+            });
+        }
+        
+        // Note: Thumbnails keep their existing behavior (changing the preview)
+        // Users can click preview image to see it enlarged in modal
+        
+        // Close modal when clicking the close button
+        if (imageModalClose) {
+            imageModalClose.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent closing the container too
+                closeImageModal();
+            });
+        }
+        
+        // Close modal when clicking on the overlay (dark background)
+        if (imageModalOverlay) {
+            imageModalOverlay.addEventListener('click', function(e) {
+                // Only close if clicking directly on overlay, not on the image container
+                if (e.target === imageModalOverlay) {
+                    closeImageModal();
+                }
+            });
+        }
+        
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            // Check if Escape key was pressed and modal is open
+            if (e.key === 'Escape' && imageModalOverlay.classList.contains('active')) {
+                closeImageModal();
+            }
+        });
+        
+        // Prevent closing when clicking on the image itself
+        if (imageModalContainer) {
+            imageModalContainer.addEventListener('click', function(e) {
+                e.stopPropagation(); // Stop the click from reaching the overlay
+            });
         }
     </script>
 </body>
