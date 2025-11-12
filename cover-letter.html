@@ -508,6 +508,147 @@
         }
 
         /* ========================================
+           STICKY BOTTOM CTA TEASER
+           ======================================== */
+        
+        /* Sticky bottom teaser container */
+        .cta-teaser-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* Expandable panel above teaser */
+        .cta-expandable-panel {
+            width: 100%;
+            max-width: 595px; /* Match container width */
+            background-color: var(--bg-color);
+            border: 1px solid rgba(43, 31, 56, 0.1);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 20px;
+            box-shadow: 0 -4px 20px rgba(43, 31, 56, 0.1);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transform: translateY(100%);
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cta-expandable-panel.expanded {
+            opacity: 1;
+            max-height: 200px;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* CTA button in expandable panel */
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(43, 31, 56, 0.15);
+            background-color: rgba(43, 31, 56, 0.03);
+            transition: all 0.2s ease;
+            width: fit-content;
+        }
+
+        .cta-button:hover {
+            background-color: rgba(43, 31, 56, 0.08);
+            border-color: rgba(43, 31, 56, 0.25);
+            transform: translateX(2px);
+        }
+
+        body.dark-mode .cta-button {
+            border-color: rgba(249, 243, 239, 0.2);
+            background-color: rgba(249, 243, 239, 0.05);
+        }
+
+        body.dark-mode .cta-button:hover {
+            background-color: rgba(249, 243, 239, 0.1);
+            border-color: rgba(249, 243, 239, 0.3);
+        }
+
+        .cta-button-arrow {
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .cta-button:hover .cta-button-arrow {
+            transform: translateX(2px);
+        }
+
+        /* Sticky bottom teaser - always visible */
+        .cta-teaser {
+            width: 100%;
+            max-width: 595px; /* Match container width */
+            background-color: var(--bg-color);
+            border: 1px solid rgba(43, 31, 56, 0.1);
+            border-radius: 12px 12px 0 0;
+            padding: 12px 20px;
+            box-shadow: 0 -4px 20px rgba(43, 31, 56, 0.1);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-color);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(100%);
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            user-select: none;
+        }
+
+        .cta-teaser.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .cta-teaser:hover {
+            background-color: rgba(43, 31, 56, 0.02);
+        }
+
+        body.dark-mode .cta-teaser:hover {
+            background-color: rgba(249, 243, 239, 0.03);
+        }
+
+        /* Responsive: Adjust padding on smaller screens */
+        @media (max-width: 768px) {
+            .cta-teaser,
+            .cta-expandable-panel {
+                max-width: 100%;
+                border-radius: 0;
+            }
+            
+            .cta-expandable-panel {
+                padding: 16px;
+            }
+            
+            .cta-teaser {
+                padding: 10px 16px;
+                font-size: 11px;
+            }
+        }
+
+        /* ========================================
            CONTENT SWITCHER
            ======================================== */
         
@@ -694,7 +835,7 @@
         
         <div class="theme-toggle" id="themeToggle">
             <div class="toggle-knob">
-                <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
+                <img id="toggleIcon" src="assets_toggle/light_mode.png" alt="Mode icon">
             </div>
             <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
         </div>
@@ -704,7 +845,7 @@
             <div class="photo-tooltip" id="photoTooltip">Want to see what's behind me? Change the website mode.</div>
             <div class="photo" id="photoContainer">
                 <div class="photo-background-box"></div>
-                <img src="Files/mary-daniel.png" alt="Mary Daniel">
+                <img src="assets_personal/mary-daniel.png" alt="Mary Daniel">
                 <div class="scan-overlay"></div>
             </div>
             
@@ -792,10 +933,26 @@
             <p class="job-title dark-mode-only">Human Being</p>
             
             <div class="signature-image">
-                <img src="Files/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="assets_personal/signature.svg" alt="Signature" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
         </div>
 
+    </div>
+
+    <!-- STICKY BOTTOM CTA TEASER -->
+    <div class="cta-teaser-container">
+        <!-- Expandable panel with CTA button -->
+        <div class="cta-expandable-panel" id="ctaExpandablePanel">
+            <a href="case-study.html" class="cta-button">
+                See how I improved onboarding
+                <span class="cta-button-arrow">→</span>
+            </a>
+        </div>
+        
+        <!-- Sticky teaser - always visible -->
+        <div class="cta-teaser" id="ctaTeaser">
+            👀 Curious what this looks like in action?
+        </div>
     </div>
 
     <!-- ========================================
@@ -838,20 +995,20 @@
 
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
-            toggleIcon.src = 'toggle/dark_mode.png';
+            toggleIcon.src = 'assets_toggle/dark_mode.png';
             toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
             if (photoTooltip) {
                 photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
             }
-            profilePhoto.src = 'Files/funny_face2.png';
+            profilePhoto.src = 'assets_personal/funny_face2.png';
         } else {
             body.classList.remove('dark-mode');
-            toggleIcon.src = 'toggle/light_mode.png';
+            toggleIcon.src = 'assets_toggle/light_mode.png';
             toggleTooltip.textContent = 'Switch to see me beyond work';
             if (photoTooltip) {
                 photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
             }
-            profilePhoto.src = 'Files/mary-daniel.png';
+            profilePhoto.src = 'assets_personal/mary-daniel.png';
         }
 
         themeToggleButton.addEventListener('click', function() {
@@ -863,22 +1020,22 @@
             
             if (isDarkMode) {
                 body.classList.remove('dark-mode');
-                toggleIcon.src = 'toggle/light_mode.png';
+                toggleIcon.src = 'assets_toggle/light_mode.png';
                 toggleTooltip.textContent = 'Switch to see me beyond work';
                 if (photoTooltip) {
                     photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
                 }
                 localStorage.setItem('theme', 'light');
-                profilePhoto.src = 'Files/mary-daniel.png';
+                profilePhoto.src = 'assets_personal/mary-daniel.png';
             } else {
                 body.classList.add('dark-mode');
-                toggleIcon.src = 'toggle/dark_mode.png';
+                toggleIcon.src = 'assets_toggle/dark_mode.png';
                 toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
                 if (photoTooltip) {
                     photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
                 }
                 localStorage.setItem('theme', 'dark');
-                profilePhoto.src = 'Files/funny_face2.png';
+                profilePhoto.src = 'assets_personal/funny_face2.png';
             }
             
             setTimeout(function() {
@@ -895,7 +1052,42 @@
                 }
             }, 1500);
         });
+
+        /* ========================================
+           STICKY BOTTOM CTA TEASER SYSTEM
+           ======================================== */
+        const ctaTeaser = document.getElementById('ctaTeaser');
+        const ctaExpandablePanel = document.getElementById('ctaExpandablePanel');
+
+        // Show teaser after random delay between 2-3 seconds with smooth animation
+        // Generate random delay between 2000ms (2s) and 3000ms (3s)
+        const randomDelay = Math.floor(Math.random() * 1000) + 2000;
+        
+        setTimeout(function() {
+            // Add 'visible' class to trigger smooth slide-up animation from bottom
+            ctaTeaser.classList.add('visible');
+        }, randomDelay);
+
+        // Teaser click functionality - toggles expandable panel
+        if (ctaTeaser) {
+            ctaTeaser.addEventListener('click', function() {
+                // Toggle expanded class on panel
+                const isExpanded = ctaExpandablePanel.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Collapse panel
+                    ctaExpandablePanel.classList.remove('expanded');
+                } else {
+                    // Expand panel
+                    ctaExpandablePanel.classList.add('expanded');
+                }
+            });
+        }
+
+        // Click outside to collapse (optional - click on teaser again to collapse)
+        // The teaser click handler above handles the toggle
     </script>
 </body>
 </html>
+
 

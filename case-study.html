@@ -62,16 +62,36 @@
             min-height: 858px;
         }
 
-        /* NAVIGATION LINKS */
+        /* NAVIGATION LINKS - Matches CTA button style */
         .nav-link {
-            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
             color: var(--text-color);
-            text-decoration: underline;
-            transition: opacity 0.3s ease;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(43, 31, 56, 0.15);
+            background-color: rgba(43, 31, 56, 0.03);
+            transition: all 0.2s ease;
+            width: fit-content;
         }
 
         .nav-link:hover {
-            opacity: 0.7;
+            background-color: rgba(43, 31, 56, 0.08);
+            border-color: rgba(43, 31, 56, 0.25);
+            transform: translateX(2px);
+        }
+
+        body.dark-mode .nav-link {
+            border-color: rgba(249, 243, 239, 0.2);
+            background-color: rgba(249, 243, 239, 0.05);
+        }
+
+        body.dark-mode .nav-link:hover {
+            background-color: rgba(249, 243, 239, 0.1);
+            border-color: rgba(249, 243, 239, 0.3);
         }
 
         .nav-back {
@@ -271,22 +291,35 @@
 
         .outcome-image-large img,
         .outcome-image-large video {
-            width: 354.8px;
-            height: 221.75px;
+            width: 95%;
+            max-width: 565px;
+            height: auto;
+            max-height: 354px;
             border-radius: 8px;
-            object-fit: cover;
-            margin: 64px 43px;
+            object-fit: contain;
+            margin: 0;
+            display: block;
         }
 
         .outcome-images-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
             margin-bottom: 12px;
         }
 
         .outcome-image-small {
-            flex: 1;
-            height: 200px;
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .outcome-image-large-grid {
+            grid-column: span 2;
+            height: 300px;
             position: relative;
             display: flex;
             align-items: center;
@@ -302,19 +335,41 @@
             background-color: var(--outcome-bg-brown);
         }
 
+        .outcome-image-large-grid.yellow {
+            background-color: var(--outcome-bg-yellow);
+        }
+
         .outcome-image-small img {
-            width: 187px;
-            height: 117px;
+            width: 240px;
+            height: 180px;
             border-radius: 8px;
             object-fit: contain;
-            margin: 41px 14px;
+            margin: 35px 14px;
         }
 
         .outcome-image-small.brown img {
-            width: 176px;
-            height: 176px;
+            width: 220px;
+            height: 220px;
             object-fit: cover;
-            margin: 12.274px 19px;
+            margin: 15px 19px;
+        }
+
+        .outcome-image-small.lt-modal img {
+            width: 280px;
+            height: 220px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin: 15px 14px;
+        }
+
+        .outcome-image-large-grid img {
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+            max-height: 280px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin: 10px 20px;
         }
 
         /* ========================================
@@ -539,17 +594,25 @@
 
             .outcome-image-large img,
             .outcome-image-large video {
-                width: 90%;
+                width: 95%;
                 height: auto;
-                margin: 20px 5%;
+                margin: 0;
             }
 
             .outcome-images-grid {
-                flex-direction: column;
+                grid-template-columns: 1fr;
+            }
+
+            .outcome-image-large-grid {
+                grid-column: span 1;
             }
 
             .outcome-image-small {
                 width: 100%;
+            }
+
+            .outcome-image-large-grid {
+                height: 250px;
             }
 
             .theme-toggle {
@@ -601,8 +664,7 @@
 
         <!-- HERO IMAGE -->
         <div class="hero-image">
-            <!-- TODO: Replace with actual hero image -->
-            <img src="refernces/refernce_1.jpg" alt="Case study hero image">
+            <img src="assets_onoboarding/new_step.png" alt="Case study hero image">
         </div>
 
         <!-- OVERVIEW SECTION -->
@@ -737,8 +799,11 @@
             
             <!-- Large outcome image/video -->
             <div class="outcome-image-large">
-                <!-- TODO: Replace with actual outcome video/image -->
-                <img src="refernces/refernce_2.jpg" alt="Outcome visualization">
+                <video autoplay loop muted playsinline controls>
+                    <source src="assets_onoboarding/Prototype.mov" type="video/quicktime">
+                    <source src="assets_onoboarding/Prototype.mov" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
 
             <div class="section-content reduced-gap" id="outcomeContent1">
@@ -752,19 +817,22 @@
                 <p class="italic-text">To accelerate alignment, I used AI-assisted prototyping with Claude and GPT — generating copy, flow variations, and motion snippets to present concepts to stakeholders in hours instead of days.</p>
             </div>
 
-            <!-- Two smaller outcome images -->
+            <!-- Mixed layout: big image, two small images, text, big image -->
             <div class="outcome-images-grid">
-                <div class="outcome-image-small yellow">
-                    <!-- TODO: Replace with actual image -->
-                    <img src="refernces/refernce_3.jpg" alt="Outcome example 1">
+                <!-- First row: Full width big image -->
+                <div class="outcome-image-large-grid yellow">
+                    <img src="assets_onoboarding/new_step2.png" alt="New Step 2">
+                </div>
+                <!-- Second row: Two small images -->
+                <div class="outcome-image-small yellow lt-modal">
+                    <img src="assets_onoboarding/LT Modal.png" alt="LT Modal">
                 </div>
                 <div class="outcome-image-small brown">
-                    <!-- TODO: Replace with actual image -->
-                    <img src="refernces/refernce_4.jpg" alt="Outcome example 2">
+                    <img src="assets_onoboarding/LT Modal_error.png" alt="LT Modal Error">
                 </div>
             </div>
 
-            <!-- Results text -->
+            <!-- Impact text -->
             <div class="section-content" id="outcomeContent2">
                 <div class="skeleton-loader" id="outcomeSkeleton2">
                     <div class="skeleton-paragraph">
@@ -772,6 +840,21 @@
                         <div class="skeleton-line full"></div>
                         <div class="skeleton-line medium"></div>
                     </div>
+                </div>
+                <p>This was a simple improvement that made a big impact — helping guide and educate users through their first experience with the new product.</p>
+            </div>
+
+            <!-- Last big image -->
+            <div class="outcome-images-grid">
+                <div class="outcome-image-large-grid yellow">
+                    <img src="assets_onoboarding/tooltip.png" alt="Tooltip">
+                </div>
+            </div>
+
+            <!-- Metrics section -->
+            <h2 class="section-title">Metrics</h2>
+            <div class="section-content" id="outcomeContent3">
+                <div class="skeleton-loader" id="outcomeSkeleton3">
                     <div class="skeleton-paragraph">
                         <div class="skeleton-line full"></div>
                         <div class="skeleton-line long"></div>
@@ -782,8 +865,6 @@
                         <div class="skeleton-line short"></div>
                     </div>
                 </div>
-                <p>This was a simple improvement that made a big impact — helping guide and educate users through their first experience with the new product.</p>
-                <p>&nbsp;</p>
                 <p>After launch, the redesign led to a <strong>24% increase in click-throughs</strong> on the first upload interaction.</p>
                 <p>&nbsp;</p>
                 <p>Users who explored the sample video flow were significantly more likely to <strong>complete a full generation</strong>, validating our intuition that curiosity drives commitment.</p>
@@ -846,7 +927,8 @@
             { skeleton: document.getElementById('numberedSkeleton2'), content: document.getElementById('numberedDesc2'), section: document.getElementById('numberedItem2') },
             { skeleton: document.getElementById('numberedSkeleton3'), content: document.getElementById('numberedDesc3'), section: document.getElementById('numberedItem3') },
             { skeleton: document.getElementById('outcomeSkeleton1'), content: document.getElementById('outcomeContent1'), section: null },
-            { skeleton: document.getElementById('outcomeSkeleton2'), content: document.getElementById('outcomeContent2'), section: null }
+            { skeleton: document.getElementById('outcomeSkeleton2'), content: document.getElementById('outcomeContent2'), section: null },
+            { skeleton: document.getElementById('outcomeSkeleton3'), content: document.getElementById('outcomeContent3'), section: null }
         ];
 
         // Function to show skeleton loaders
