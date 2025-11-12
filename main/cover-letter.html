@@ -66,6 +66,7 @@
             gap: 8px;
             margin-bottom: 20px;
             width: 172px;
+            position: relative; /* Allow absolute positioning of tooltip */
         }
 
         /* PHOTO */
@@ -79,16 +80,106 @@
             font-size: 10px;
             color: #666;
             text-align: center;
-            overflow: hidden;
+            overflow: visible;
             transition: background-color 0.3s ease;
             position: relative;
+            cursor: pointer;
+        }
+
+        /* Background box that reveals on hover - hinting at dark mode image */
+        .photo-background-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 172px;
+            height: 172px;
+            background-color: #AD9585;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translate(4px, 4px);
+        }
+
+        /* Hover effect: photo twists left (-x direction) */
+        .photo:hover {
+            transform: rotate(-4deg);
+            transition: transform 0.3s ease;
+        }
+
+        /* Background box twists right (+x direction) - opposite of photo */
+        .photo:hover .photo-background-box {
+            opacity: 1;
+            transform: translate(4px, 4px) rotate(4deg);
+        }
+
+        /* Dark mode: change background box color */
+        body.dark-mode .photo-background-box {
+            background-color: #453D5C;
         }
 
         .photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: filter 0.3s ease;
+            transition: filter 0.3s ease, transform 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           PHOTO TOOLTIP - Desktop Only
+           ======================================== */
+        
+        .photo-tooltip {
+            position: absolute;
+            top: 86px; /* Center vertically with photo (half of 172px photo height) */
+            transform: translateY(-50%); /* Perfect vertical centering */
+            right: calc(100% + 10px); /* Position to the left of the photo */
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
+            display: none; /* Hidden by default, shown only on desktop */
+            /* Tooltip is outside photo container, so it won't rotate */
+        }
+        
+        .photo-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -4px; /* Arrow on the right side, pointing towards the image */
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid rgba(0, 0, 0, 0.8); /* Arrow pointing right */
+        }
+        
+        /* Show tooltip when hovering the photo (desktop only) */
+        @media (min-width: 769px) {
+            .photo-tooltip {
+                display: block;
+            }
+            
+            .header:hover .photo-tooltip {
+                opacity: 1;
+            }
+        }
+
+        body.dark-mode .photo-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2B1F38;
+        }
+
+        body.dark-mode .photo-tooltip::after {
+            border-left: 4px solid rgba(255, 255, 255, 0.95);
         }
 
         /* ========================================
@@ -118,10 +209,22 @@
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
             transform: translateY(-100%);
             opacity: 0;
+            visibility: hidden; /* Completely hide when not animating */
+            pointer-events: none; /* Prevent interaction during animation */
         }
 
         .photo.loading .scan-overlay {
+            visibility: visible; /* Show during animation */
             animation: scanDown 1.2s ease-in-out;
+            animation-fill-mode: none; /* Don't keep final state */
+        }
+
+        /* Ensure scan-overlay resets properly after animation */
+        .photo:not(.loading) .scan-overlay {
+            transform: translateY(-100%) !important;
+            opacity: 0 !important;
+            visibility: hidden !important; /* Completely hide */
+            animation: none !important; /* Clear any lingering animation */
         }
 
         @keyframes scanDown {
@@ -598,7 +701,9 @@
         
         <!-- HEADER -->
         <div class="header">
+            <div class="photo-tooltip" id="photoTooltip">Want to see what's behind me? Change the website mode.</div>
             <div class="photo" id="photoContainer">
+                <div class="photo-background-box"></div>
                 <img src="Files/mary-daniel.png" alt="Mary Daniel">
                 <div class="scan-overlay"></div>
             </div>
@@ -645,7 +750,7 @@
                 </div>
             </div>
             
-            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Monday.com team,</span></p>
+            <p class="greeting"><span class="hoverable-word" data-emoji="👋">Hi Reader.</span></p>
 
             <p class="light-mode-only">
                 <span class="hoverable-word" data-emoji="👋">I'm Mary</span> — a product designer based in <span class="hoverable-word" data-emoji="🏙️">Tel Aviv</span>, passionate about this beautiful new 
@@ -721,23 +826,31 @@
         /* DARK MODE TOGGLE SYSTEM */
         const toggleIcon = document.getElementById('toggleIcon');
         const toggleTooltip = document.getElementById('toggleTooltip');
+        const photoTooltip = document.getElementById('photoTooltip');
         const body = document.body;
         const profilePhoto = document.querySelector('.photo img');
         const photoContainer = document.getElementById('photoContainer');
         const skeletonLoader = document.getElementById('skeletonLoader');
         const letterContent = document.getElementById('letterContent');
+        const scanOverlay = document.querySelector('.scan-overlay');
 
         const savedTheme = localStorage.getItem('theme');
 
         if (savedTheme === 'dark') {
             body.classList.add('dark-mode');
             toggleIcon.src = 'toggle/dark_mode.png';
-            toggleTooltip.textContent = 'Back to work mode';
+            toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
+            if (photoTooltip) {
+                photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
+            }
             profilePhoto.src = 'Files/funny_face2.png';
         } else {
             body.classList.remove('dark-mode');
             toggleIcon.src = 'toggle/light_mode.png';
             toggleTooltip.textContent = 'Switch to see me beyond work';
+            if (photoTooltip) {
+                photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
+            }
             profilePhoto.src = 'Files/mary-daniel.png';
         }
 
@@ -752,12 +865,18 @@
                 body.classList.remove('dark-mode');
                 toggleIcon.src = 'toggle/light_mode.png';
                 toggleTooltip.textContent = 'Switch to see me beyond work';
+                if (photoTooltip) {
+                    photoTooltip.textContent = 'Want to see what\'s behind me? Change the website mode.';
+                }
                 localStorage.setItem('theme', 'light');
                 profilePhoto.src = 'Files/mary-daniel.png';
             } else {
                 body.classList.add('dark-mode');
                 toggleIcon.src = 'toggle/dark_mode.png';
-                toggleTooltip.textContent = 'Back to work mode';
+                toggleTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
+                if (photoTooltip) {
+                    photoTooltip.textContent = 'Yep, my "work mode" is still there behind me.';
+                }
                 localStorage.setItem('theme', 'dark');
                 profilePhoto.src = 'Files/funny_face2.png';
             }
@@ -766,6 +885,14 @@
                 photoContainer.classList.remove('loading');
                 skeletonLoader.classList.remove('active');
                 letterContent.classList.remove('loading');
+                
+                // Explicitly reset scan-overlay to ensure it's hidden
+                if (scanOverlay) {
+                    scanOverlay.style.transform = 'translateY(-100%)';
+                    scanOverlay.style.opacity = '0';
+                    scanOverlay.style.visibility = 'hidden';
+                    scanOverlay.style.animation = 'none';
+                }
             }, 1500);
         });
     </script>

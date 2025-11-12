@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mary Daniel - Case Study: Improving Onboarding Conversion</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           CSS VARIABLES - Color System
+           ======================================== */
+        :root {
+            --bg-color: #F9F3EF;
+            --text-color: #2B1F38;
+            --text-muted: rgba(43, 31, 56, 0.5);
+            --photo-bg: #e0e0e0;
+            --accent-red: #E74C58;
+            --toggle-bg: rgba(43, 31, 56, 0.1);
+            --toggle-icon: #2B1F38;
+            --outcome-bg-green: #4c674c;
+            --outcome-bg-yellow: #9d8716;
+            --outcome-bg-brown: #66624d;
+        }
+
+        body.dark-mode {
+            --bg-color: #18141D;
+            --text-color: #F0E9F5;
+            --text-muted: #B8ACC4;
+            --photo-bg: #2d2438;
+            --accent-red: #A78BFA;
+            --toggle-bg: rgba(249, 243, 239, 0.1);
+            --toggle-icon: #F0E9F5;
+        }
+
+        /* BODY */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            padding: 32px;
+            font-size: 14px;
+            line-height: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 595px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 858px;
+        }
+
+        /* NAVIGATION LINKS */
+        .nav-link {
+            font-size: 10px;
+            color: var(--text-color);
+            text-decoration: underline;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-link:hover {
+            opacity: 0.7;
+        }
+
+        .nav-back {
+            margin-bottom: 20px;
+        }
+
+        .nav-next {
+            margin-top: 24px;
+        }
+
+        /* HEADER SECTION */
+        .case-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .case-meta {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-color);
+        }
+
+        .case-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: normal;
+        }
+
+        /* HERO IMAGE */
+        .hero-image {
+            width: 100%;
+            height: 276px;
+            margin-bottom: 20px;
+            background-color: var(--photo-bg);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        /* SECTION STYLING */
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: normal;
+        }
+
+        .section-content {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 20px;
+            color: var(--text-color);
+        }
+
+        .section-content p {
+            margin: 0;
+            margin-bottom: 0;
+        }
+
+        .section-content p:not(:last-child) {
+            margin-bottom: 0;
+        }
+
+        /* BOLD TEXT WITHIN PARAGRAPHS - RED COLOR */
+        .section-content strong {
+            font-weight: 700;
+            color: var(--accent-red);
+        }
+
+        /* ITALIC TEXT STYLING */
+        .section-content .italic-text {
+            font-style: italic;
+        }
+
+        /* REDUCED GAP FOR ITALIC TEXT SECTION */
+        .section-content.reduced-gap {
+            margin-top: -12px;
+        }
+
+        /* CHALLENGE SECTION - Two Column Layout */
+        .challenge-section {
+            display: flex;
+            gap: 42px;
+            align-items: baseline;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .challenge-visual {
+            width: 222px;
+            height: 222px;
+            background-color: #E8E0F0;
+            border: 1px solid #9B7FB8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .challenge-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .challenge-emoji {
+            font-size: 26px;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        /* NUMBERED LIST STYLING */
+        .numbered-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .numbered-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .numbered-item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .numbered-item-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: normal;
+        }
+
+        .numbered-item-title ol {
+            list-style: decimal;
+            padding-left: 15px;
+            margin: 0;
+        }
+
+        .numbered-item-title li {
+            list-style-position: outside;
+        }
+
+        .numbered-item-description {
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 20px;
+            color: var(--text-color);
+        }
+
+        /* OUTCOME SECTION */
+        .outcome-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .outcome-image-large {
+            position: relative;
+            width: 100%;
+            height: 349px;
+            background-color: var(--outcome-bg-green);
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .outcome-image-large img,
+        .outcome-image-large video {
+            width: 354.8px;
+            height: 221.75px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 64px 43px;
+        }
+
+        .outcome-images-grid {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .outcome-image-small {
+            flex: 1;
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .outcome-image-small.yellow {
+            background-color: var(--outcome-bg-yellow);
+        }
+
+        .outcome-image-small.brown {
+            background-color: var(--outcome-bg-brown);
+        }
+
+        .outcome-image-small img {
+            width: 187px;
+            height: 117px;
+            border-radius: 8px;
+            object-fit: contain;
+            margin: 41px 14px;
+        }
+
+        .outcome-image-small.brown img {
+            width: 176px;
+            height: 176px;
+            object-fit: cover;
+            margin: 12.274px 19px;
+        }
+
+        /* ========================================
+           DARK MODE TOGGLE SWITCH
+           ======================================== */
+        
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 1001;
+            width: 44px;
+            height: 24px;
+            background-color: #002846;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+            user-select: none;
+            opacity: 1;
+        }
+
+        .theme-toggle.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #72C3EC;
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .toggle-knob img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        body.dark-mode .toggle-knob {
+            transform: translateX(22px);
+        }
+
+        .theme-toggle:hover .toggle-knob {
+            transform: scale(1.05);
+        }
+
+        body.dark-mode .theme-toggle:hover .toggle-knob {
+            transform: translateX(22px) scale(1.05);
+        }
+
+        /* ========================================
+           TOOLTIP
+           ======================================== */
+        
+        .toggle-tooltip {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: calc(100% + 10px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1002;
+        }
+        
+        .toggle-tooltip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: -4px;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-left: 4px solid rgba(0, 0, 0, 0.8);
+        }
+        
+        .theme-toggle:hover .toggle-tooltip {
+            opacity: 1;
+        }
+
+        body.dark-mode .toggle-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2B1F38;
+        }
+
+        body.dark-mode .toggle-tooltip::before {
+            border-left: 4px solid rgba(255, 255, 255, 0.95);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+                font-size: 13px;
+                line-height: 18px;
+            }
+
+            .container {
+                max-width: 100%;
+                min-height: auto;
+            }
+
+            .hero-image {
+                height: 200px;
+            }
+
+            .challenge-section {
+                flex-direction: column;
+            }
+
+            .challenge-visual {
+                width: 100%;
+                height: 120px;
+            }
+
+            .outcome-image-large {
+                height: 250px;
+            }
+
+            .outcome-image-large img,
+            .outcome-image-large video {
+                width: 90%;
+                height: auto;
+                margin: 20px 5%;
+            }
+
+            .outcome-images-grid {
+                flex-direction: column;
+            }
+
+            .outcome-image-small {
+                width: 100%;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 22px;
+            }
+
+            .toggle-knob {
+                width: 18px;
+                height: 18px;
+            }
+
+            .toggle-knob img {
+                width: 14px;
+                height: 14px;
+            }
+
+            body.dark-mode .toggle-knob {
+                transform: translateX(20px);
+            }
+
+            body.dark-mode .theme-toggle:hover .toggle-knob {
+                transform: translateX(20px) scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- DARK MODE TOGGLE -->
+        <div class="theme-toggle" id="themeToggle">
+            <div class="toggle-knob">
+                <img id="toggleIcon" src="toggle/light_mode.png" alt="Mode icon">
+            </div>
+            <div class="toggle-tooltip" id="toggleTooltip">Switch to see me beyond work</div>
+        </div>
+        
+        <!-- BACK NAVIGATION -->
+        <div class="nav-back">
+            <a href="cover-letter.html" class="nav-link">[&lt;Back]</a>
+        </div>
+
+        <!-- CASE STUDY HEADER -->
+        <div class="case-header">
+            <p class="case-meta">Lightricks, 2025</p>
+            <h1 class="case-title">Improving Onboarding Conversion</h1>
+        </div>
+
+        <!-- HERO IMAGE -->
+        <div class="hero-image">
+            <!-- TODO: Replace with actual hero image -->
+            <img src="refernces/refernce_1.jpg" alt="Case study hero image">
+        </div>
+
+        <!-- OVERVIEW SECTION -->
+        <div class="section">
+            <h2 class="section-title">Overview</h2>
+            <div class="section-content">
+                <p>When we looked at the <strong>onboarding funnel for Content Lab</strong>, the numbers told a clear story:</p>
+                <p>&nbsp;</p>
+                <p><strong>only 34% of new users uploaded a video after landing in the product</strong>. Most dropped off before taking their first creative action.</p>
+            </div>
+        </div>
+
+        <!-- MY ROLE SECTION -->
+        <div class="section">
+            <h2 class="section-title">My role</h2>
+            <div class="section-content">
+                <p>Our goal was to turn that hesitation into <strong>curiosity and educational fennel</strong> that will help users understand our product value proposition.</p>
+            </div>
+        </div>
+
+        <!-- THE CHALLENGE SECTION -->
+        <div class="challenge-section">
+            <div class="challenge-visual">
+                <div class="challenge-emoji" id="challengeEmoji">🥵</div>
+            </div>
+            <div class="challenge-content">
+                <h2 class="section-title">The challenge</h2>
+                <div class="section-content">
+                    <p><strong>Low motivation</strong> — users didn't yet see the value of uploading.</p>
+                    <p><strong>High friction</strong> — unclear upload rules and failed first attempts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GOALS SECTION -->
+        <div class="section">
+            <h2 class="section-title">Goals</h2>
+            <div class="section-content">
+                <p>Our KPIs focused on improving upload completion rate and reducing upload errors due to file format or length.</p>
+            </div>
+        </div>
+
+        <!-- NUMBERED SOLUTIONS -->
+        <div class="numbered-list">
+            <div class="numbered-item">
+                <div class="numbered-item-content">
+                    <div class="numbered-item-title">
+                        <ol start="1">
+                            <li>Start Instantly</li>
+                        </ol>
+                    </div>
+                    <div class="numbered-item-description">
+                        Added a "Try our sample videos" entry point so users could explore tools without needing to upload first.
+                    </div>
+                </div>
+            </div>
+
+            <div class="numbered-item">
+                <div class="numbered-item-content">
+                    <div class="numbered-item-title">
+                        <ol start="2">
+                            <li>Build Confidence</li>
+                        </ol>
+                    </div>
+                    <div class="numbered-item-description">
+                        Clarified upload constraints directly in the modal (max length, file size, and best practices) so users can upload successfully on the first try.
+                    </div>
+                </div>
+            </div>
+
+            <div class="numbered-item">
+                <div class="numbered-item-content">
+                    <div class="numbered-item-title">
+                        <ol start="3">
+                            <li>Understand the Value</li>
+                        </ol>
+                    </div>
+                    <div class="numbered-item-description">
+                        Introduced contextual videos that show what each AI tool can create — helping users grasp the benefit before they start.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- THE OUTCOME SECTION -->
+        <div class="outcome-section">
+            <h2 class="section-title">The outcome</h2>
+            
+            <!-- Large outcome image/video -->
+            <div class="outcome-image-large">
+                <!-- TODO: Replace with actual outcome video/image -->
+                <img src="refernces/refernce_2.jpg" alt="Outcome visualization">
+            </div>
+
+            <div class="section-content reduced-gap">
+                <p class="italic-text">To accelerate alignment, I used AI-assisted prototyping with Claude and GPT — generating copy, flow variations, and motion snippets to present concepts to stakeholders in hours instead of days.</p>
+            </div>
+
+            <!-- Two smaller outcome images -->
+            <div class="outcome-images-grid">
+                <div class="outcome-image-small yellow">
+                    <!-- TODO: Replace with actual image -->
+                    <img src="refernces/refernce_3.jpg" alt="Outcome example 1">
+                </div>
+                <div class="outcome-image-small brown">
+                    <!-- TODO: Replace with actual image -->
+                    <img src="refernces/refernce_4.jpg" alt="Outcome example 2">
+                </div>
+            </div>
+
+            <!-- Results text -->
+            <div class="section-content">
+                <p>This was a simple improvement that made a big impact — helping guide and educate users through their first experience with the new product.</p>
+                <p>&nbsp;</p>
+                <p>After launch, the redesign led to a <strong>24% increase in click-throughs</strong> on the first upload interaction.</p>
+                <p>&nbsp;</p>
+                <p>Users who explored the sample video flow were significantly more likely to <strong>complete a full generation</strong>, validating our intuition that curiosity drives commitment.</p>
+            </div>
+        </div>
+
+        <!-- NEXT NAVIGATION -->
+        <div class="nav-next">
+            <a href="https://mary-daniel-portfolio.webflow.io/" target="_blank" class="nav-link">[Next project&gt;]</a>
+        </div>
+
+    </div>
+
+    <!-- ========================================
+         JAVASCRIPT
+         ======================================== -->
+    <script>
+        /* DARK MODE TOGGLE SYSTEM */
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleTooltip = document.getElementById('toggleTooltip');
+        const themeToggleButton = document.getElementById('themeToggle');
+        const body = document.body;
+
+        const savedTheme = localStorage.getItem('theme');
+
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            toggleIcon.src = 'toggle/dark_mode.png';
+            toggleTooltip.textContent = 'Back to work mode';
+        } else {
+            body.classList.remove('dark-mode');
+            toggleIcon.src = 'toggle/light_mode.png';
+            toggleTooltip.textContent = 'Switch to see me beyond work';
+        }
+
+        themeToggleButton.addEventListener('click', function() {
+            const isDarkMode = body.classList.contains('dark-mode');
+            
+            if (isDarkMode) {
+                body.classList.remove('dark-mode');
+                toggleIcon.src = 'toggle/light_mode.png';
+                toggleTooltip.textContent = 'Switch to see me beyond work';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark-mode');
+                toggleIcon.src = 'toggle/dark_mode.png';
+                toggleTooltip.textContent = 'Back to work mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        /* EMOJI ROTATION FOR CHALLENGE SECTION */
+        const challengeEmoji = document.getElementById('challengeEmoji');
+        const challengeEmojis = ['🥵', '😮‍💨', '😓', '😤'];
+        let currentEmojiIndex = 0;
+
+        function rotateChallengeEmoji() {
+            // Fade out
+            challengeEmoji.style.opacity = '0';
+            
+            setTimeout(function() {
+                // Change emoji
+                currentEmojiIndex = (currentEmojiIndex + 1) % challengeEmojis.length;
+                challengeEmoji.textContent = challengeEmojis[currentEmojiIndex];
+                
+                // Fade in
+                challengeEmoji.style.opacity = '1';
+            }, 300); // Half of transition time for smooth fade
+        }
+
+        // Start rotation after initial delay
+        setTimeout(function() {
+            rotateChallengeEmoji();
+            // Continue rotating every 3000ms
+            setInterval(rotateChallengeEmoji, 3000);
+        }, 3000);
+    </script>
+</body>
+</html>
+
