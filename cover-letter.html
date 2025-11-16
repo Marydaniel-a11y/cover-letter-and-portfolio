@@ -973,19 +973,71 @@
            ======================================== */
         
         .emoji-display {
-            position: absolute;
-            top: 0;
-            right: 0;
+            position: fixed; /* Changed from absolute to fixed for viewport-relative positioning */
             font-size: 34px;
             line-height: 1;
             opacity: 0;
-            transition: opacity 0.3s ease;
             pointer-events: none;
             z-index: 1000;
+            /* Rounded styling with soft drop shadow */
+            padding: 8px 12px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* Initial state - scaled down and ready for animation */
+            transform: scale(0.5) translateY(10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
         }
 
+        /* Dark mode styling for emoji display */
+        body.dark-mode .emoji-display {
+            background-color: rgba(249, 243, 239, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Visible state with bouncy entrance animation */
         .emoji-display.visible {
             opacity: 1;
+            animation: emojiBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+
+        /* Exit animation - fade away and float out */
+        .emoji-display.exiting {
+            animation: emojiFloatOut 0.4s ease-in forwards;
+        }
+
+        /* Bouncy entrance animation - combines scale, slight jitter, and upward drift */
+        @keyframes emojiBounceIn {
+            0% {
+                transform: scale(0.3) translateY(20px) rotate(-5deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1) translateY(-8px) rotate(2deg);
+                opacity: 0.9;
+            }
+            70% {
+                transform: scale(0.95) translateY(-3px) rotate(-1deg);
+            }
+            85% {
+                transform: scale(1.02) translateY(-5px) rotate(1deg);
+            }
+            100% {
+                transform: scale(1) translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        /* Float out exit animation - fades and drifts upward */
+        @keyframes emojiFloatOut {
+            0% {
+                transform: scale(1) translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8) translateY(-30px) rotate(-5deg);
+                opacity: 0;
+            }
         }
 
         /* ========================================
@@ -2157,19 +2209,177 @@
         const themeToggleButton = document.getElementById('themeToggle');
         const hoverableWords = document.querySelectorAll('.hoverable-word');
 
+        // Function to find the best position for emoji in whitespace OUTSIDE the container
+        function findBestEmojiPosition(wordElement) {
+            // Get the bounding rectangle of the hovered word
+            const wordRect = wordElement.getBoundingClientRect();
+            
+            // Get the container element to check its boundaries
+            const container = document.querySelector('.container');
+            const containerRect = container ? container.getBoundingClientRect() : null;
+            
+            // Get viewport dimensions
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            // Emoji display dimensions (approximate - will be measured)
+            const emojiWidth = 60; // Approximate width including padding
+            const emojiHeight = 50; // Approximate height including padding
+            
+            // Padding from the word to avoid overlap
+            const padding = 20;
+            
+            // Helper function to check if a position is inside the container
+            function isInsideContainer(left, top) {
+                if (!containerRect) return false;
+                // Check if the emoji (with its dimensions) would overlap the container
+                return (left < containerRect.right + padding && 
+                        left + emojiWidth > containerRect.left - padding &&
+                        top < containerRect.bottom + padding && 
+                        top + emojiHeight > containerRect.top - padding);
+            }
+            
+            // Calculate available space in each direction
+            const spaceAbove = wordRect.top;
+            const spaceBelow = viewportHeight - wordRect.bottom;
+            const spaceLeft = wordRect.left;
+            const spaceRight = viewportWidth - wordRect.right;
+            
+            // Calculate positions for each direction
+            const positions = {
+                // Position to the LEFT of container (in whitespace)
+                left: {
+                    top: wordRect.top + (wordRect.height / 2) - (emojiHeight / 2),
+                    left: containerRect ? containerRect.left - emojiWidth - padding : wordRect.left - emojiWidth - padding,
+                    available: spaceLeft >= emojiWidth + padding,
+                    outsideContainer: true
+                },
+                // Position to the RIGHT of container (in whitespace)
+                right: {
+                    top: wordRect.top + (wordRect.height / 2) - (emojiHeight / 2),
+                    left: containerRect ? containerRect.right + padding : wordRect.right + padding,
+                    available: spaceRight >= emojiWidth + padding,
+                    outsideContainer: true
+                },
+                // Position ABOVE (check if outside container)
+                above: {
+                    top: wordRect.top - emojiHeight - padding,
+                    left: wordRect.left + (wordRect.width / 2) - (emojiWidth / 2),
+                    available: spaceAbove >= emojiHeight + padding,
+                    outsideContainer: false // Will check below
+                },
+                // Position BELOW (check if outside container)
+                below: {
+                    top: wordRect.bottom + padding,
+                    left: wordRect.left + (wordRect.width / 2) - (emojiWidth / 2),
+                    available: spaceBelow >= emojiHeight + padding,
+                    outsideContainer: false // Will check below
+                }
+            };
+            
+            // Check if above/below positions are outside container
+            if (containerRect) {
+                positions.above.outsideContainer = !isInsideContainer(positions.above.left, positions.above.top);
+                positions.below.outsideContainer = !isInsideContainer(positions.below.left, positions.below.top);
+            }
+            
+            // Prefer positions OUTSIDE the container first, then check availability
+            // Priority: left (outside) > right (outside) > above (if outside) > below (if outside) > above (fallback) > below (fallback)
+            let bestPosition = null;
+            
+            // First, try positions that are definitely outside the container
+            if (positions.left.available && positions.left.outsideContainer) {
+                bestPosition = positions.left;
+            } else if (positions.right.available && positions.right.outsideContainer) {
+                bestPosition = positions.right;
+            } else if (positions.above.available && positions.above.outsideContainer) {
+                bestPosition = positions.above;
+            } else if (positions.below.available && positions.below.outsideContainer) {
+                bestPosition = positions.below;
+            } else if (positions.above.available) {
+                // Fallback: use above even if inside container (better than nothing)
+                bestPosition = positions.above;
+            } else if (positions.below.available) {
+                // Fallback: use below even if inside container
+                bestPosition = positions.below;
+            } else {
+                // Last resort: position to the left or right of the word, outside container if possible
+                if (containerRect && spaceLeft >= emojiWidth + padding) {
+                    bestPosition = {
+                        top: wordRect.top + (wordRect.height / 2) - (emojiHeight / 2),
+                        left: containerRect.left - emojiWidth - padding
+                    };
+                } else if (containerRect && spaceRight >= emojiWidth + padding) {
+                    bestPosition = {
+                        top: wordRect.top + (wordRect.height / 2) - (emojiHeight / 2),
+                        left: containerRect.right + padding
+                    };
+                } else {
+                    // Absolute fallback
+                    bestPosition = {
+                        top: wordRect.top - emojiHeight - padding,
+                        left: wordRect.left + (wordRect.width / 2) - (emojiWidth / 2)
+                    };
+                }
+            }
+            
+            // Ensure emoji stays within viewport bounds
+            bestPosition.left = Math.max(10, Math.min(bestPosition.left, viewportWidth - emojiWidth - 10));
+            bestPosition.top = Math.max(10, Math.min(bestPosition.top, viewportHeight - emojiHeight - 10));
+            
+            return bestPosition;
+        }
+
+        // Store timeout IDs to cancel hide animations if mouse re-enters quickly
+        let hideTimeout = null;
+
         hoverableWords.forEach(word => {
             word.addEventListener('mouseenter', function() {
                 const emoji = this.getAttribute('data-emoji');
+                
+                // Cancel any pending hide animation (mouse re-entered quickly)
+                if (hideTimeout) {
+                    clearTimeout(hideTimeout);
+                    hideTimeout = null;
+                }
+                
+                // Remove any existing exit animation class
+                emojiDisplay.classList.remove('exiting');
+                
+                // Set emoji content
                 emojiDisplay.textContent = emoji;
+                
+                // Find best position for emoji
+                const position = findBestEmojiPosition(this);
+                
+                // Position the emoji
+                emojiDisplay.style.left = position.left + 'px';
+                emojiDisplay.style.top = position.top + 'px';
+                
+                // Show emoji with entrance animation
                 emojiDisplay.classList.add('visible');
-                themeToggleButton.classList.add('hidden');
+                
+                // Add pulsing animation to the word
                 this.classList.add('pulsing');
             });
 
             word.addEventListener('mouseleave', function() {
-                emojiDisplay.classList.remove('visible');
-                themeToggleButton.classList.remove('hidden');
+                // Remove pulsing animation from word immediately
                 this.classList.remove('pulsing');
+                
+                // Add a small delay before hiding (makes it less sensitive to tiny mouse movements)
+                // This gives users a "grace period" if they accidentally move the mouse slightly
+                hideTimeout = setTimeout(() => {
+                    // Add exit animation class
+                    emojiDisplay.classList.add('exiting');
+                    
+                    // Remove visible class after animation completes
+                    setTimeout(() => {
+                        emojiDisplay.classList.remove('visible');
+                        emojiDisplay.classList.remove('exiting');
+                        hideTimeout = null;
+                    }, 400); // Match animation duration
+                }, 450); // 450ms delay before starting hide - adjust this to make it more/less sensitive
             });
         });
 
