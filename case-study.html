@@ -83,6 +83,7 @@
         .sidebar-nav.collapsed {
             width: 60px; /* Minimal width when collapsed */
             padding: 80px 12px 32px 12px; /* Left/right padding: 12px */
+            overflow: visible; /* Allow tooltips to overflow (less content when collapsed, so scrolling less critical) */
         }
 
         /* When collapsed, hide text and arrows but keep icons visible */
@@ -102,6 +103,7 @@
             gap: 0; /* Remove gap when collapsed */
             pointer-events: auto; /* Keep links clickable when collapsed */
             width: 100%; /* Ensure full width for centering */
+            position: relative; /* Allow tooltips to position correctly */
         }
 
         /* Keep icons visible when collapsed and center them */
@@ -269,6 +271,58 @@
             border-right-color: rgba(255, 255, 255, 0.95);
         }
 
+        /* Navigation link tooltips - shown when sidebar is collapsed */
+        .sidebar-nav-link-tooltip {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: calc(100% + 10px);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #FFFFFF;
+            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 1003; /* Higher than sidebar (1000) to appear above */
+            font-family: 'JetBrains Mono', monospace;
+            display: none; /* Hidden by default, shown only when sidebar is collapsed */
+        }
+
+        .sidebar-nav-link-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 100%;
+            width: 0;
+            height: 0;
+            border-top: 4px solid transparent;
+            border-bottom: 4px solid transparent;
+            border-right: 4px solid rgba(0, 0, 0, 0.8);
+        }
+
+        /* Show tooltip when sidebar is collapsed and link is hovered */
+        .sidebar-nav.collapsed .sidebar-nav-link-tooltip {
+            display: block; /* Show tooltip when sidebar is collapsed */
+        }
+
+        .sidebar-nav.collapsed .sidebar-nav-link:hover .sidebar-nav-link-tooltip {
+            opacity: 1;
+        }
+
+        body.dark-mode .sidebar-nav-link-tooltip {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #0A1628;
+        }
+
+        body.dark-mode .sidebar-nav-link-tooltip::after {
+            border-right-color: rgba(255, 255, 255, 0.95);
+        }
+
+
         /* Navigation list container */
         .sidebar-nav-list {
             list-style: none;
@@ -280,15 +334,22 @@
             flex: 1; /* Take up available space to push footer down */
         }
 
-        /* Center align items when sidebar is collapsed */
+        /* Center align items when sidebar is collapsed and allow overflow for tooltips */
         .sidebar-nav.collapsed .sidebar-nav-list {
             align-items: center;
+            overflow: visible;
         }
 
         /* Top-level navigation items */
         .sidebar-nav-item {
             margin: 0;
             padding: 0;
+            position: relative; /* Allow tooltips to position correctly */
+        }
+
+        /* When collapsed, allow nav items to overflow for tooltips */
+        .sidebar-nav.collapsed .sidebar-nav-item {
+            overflow: visible;
         }
 
         /* Add spacing between navigation groups */
@@ -313,13 +374,18 @@
             font-weight: 500; /* Slightly bolder for better readability */
         }
 
-        /* Hover effect on navigation items */
+        /* Hover effect on navigation items - icon color change only, no background */
         .sidebar-nav-link:hover {
-            background-color: rgba(10, 22, 40, 0.05);
+            background-color: transparent; /* Keep background transparent */
         }
 
-        body.dark-mode .sidebar-nav-link:hover {
-            background-color: rgba(245, 247, 250, 0.05);
+        /* Change icon color on hover - using blue from photo background box */
+        .sidebar-nav-link:hover .sidebar-nav-icon {
+            color: #6B7A8F; /* Blue-gray matching photo background box */
+        }
+
+        body.dark-mode .sidebar-nav-link:hover .sidebar-nav-icon {
+            color: #453D5C; /* Purple-blue matching dark mode photo background box */
         }
 
         /* Icon styling - simple text icons */
@@ -333,6 +399,7 @@
             flex-shrink: 0;
             opacity: 0.95; /* More visible */
             line-height: 1; /* Ensure proper alignment */
+            transition: color 0.2s ease; /* Smooth color transition on hover */
         }
 
         /* SVG icon styling - ensures icons inherit color and display properly */
@@ -342,6 +409,7 @@
             color: inherit; /* Inherit color from parent link */
             stroke: currentColor; /* Use current text color for stroke */
             fill: currentColor; /* Use current text color for fill (for Figma logo) */
+            transition: color 0.2s ease, stroke 0.2s ease, fill 0.2s ease; /* Smooth color transition on hover */
         }
 
         /* Expandable arrow icon for items with nested content */
@@ -408,14 +476,19 @@
             margin-left: 4px; /* Additional indentation for visual hierarchy */
         }
 
-        /* Hover effect on nested items */
+        /* Hover effect on nested items - icon color change only, no background */
         .sidebar-nav-sublink:hover {
-            background-color: rgba(10, 22, 40, 0.05);
+            background-color: transparent; /* Keep background transparent */
             color: var(--text-color);
         }
 
-        body.dark-mode .sidebar-nav-sublink:hover {
-            background-color: rgba(245, 247, 250, 0.05);
+        /* Change icon color on hover for nested items - using blue from photo background box */
+        .sidebar-nav-sublink:hover .sidebar-nav-icon {
+            color: #6B7A8F; /* Blue-gray matching photo background box */
+        }
+
+        body.dark-mode .sidebar-nav-sublink:hover .sidebar-nav-icon {
+            color: #453D5C; /* Purple-blue matching dark mode photo background box */
         }
 
         /* Active/selected state for navigation items */
@@ -1575,6 +1648,7 @@
                         </svg>
                     </span>
                     <span>About Me</span>
+                    <div class="sidebar-nav-link-tooltip">About Me</div>
                 </a>
             </li>
             
@@ -1588,6 +1662,7 @@
                     </span>
                     <span>Case Studies</span>
                     <span class="sidebar-nav-arrow">▶</span>
+                    <div class="sidebar-nav-link-tooltip">Case Studies</div>
                 </div>
                 <ul class="sidebar-nav-sublist" id="caseStudiesSublist">
                     <li>
@@ -1631,6 +1706,7 @@
                     </span>
                     <span>Figma Handoff</span>
                     <span class="sidebar-nav-arrow">▶</span>
+                    <div class="sidebar-nav-link-tooltip">Figma Handoff</div>
                 </div>
                 <ul class="sidebar-nav-sublist" id="figmaHandoffSublist">
                     <li>
